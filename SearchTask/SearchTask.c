@@ -3,6 +3,22 @@
 #include <stdbool.h>
 #define ARRAYLENGTH 10000
 
+void printArray(int array[], const int arrayLength)
+{
+    for (int i = 0; i < arrayLength; i++)
+    {
+        printf("%d ", array[i]);
+    }
+}
+
+void randomArrayGeneration(int array[], const int arrayLength, const int module)
+{
+    for (int i = 0; i < arrayLength; i++)
+    {
+        array[i] = rand() % module;
+    }
+}
+
 void insertionSort(int array[], const int leftBorder, const int rightBorder) {
     for (int k = leftBorder; k < rightBorder + 1; k++)
     {
@@ -56,8 +72,8 @@ bool isSortedTest(int array[], const int arrayLength)
         {
             return false;
         }
-        return true;
     }
+    return true;
 }
 
 bool insertionSortTest(void)
@@ -65,11 +81,11 @@ bool insertionSortTest(void)
     int array1[ARRAYLENGTH] = { 0 };
     int array2[ARRAYLENGTH] = { 0 };
     int array3[ARRAYLENGTH] = { 0 };
+    randomArrayGeneration(array3, ARRAYLENGTH, 1000);
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
         array1[i] = i;
         array2[i] = 100000 - i;
-        array3[i] = rand() % 1000;
     }
     insertionSort(array1, 0, ARRAYLENGTH - 1);
     if (!isSortedTest(array1, ARRAYLENGTH))
@@ -101,11 +117,11 @@ bool qsortTest(void)
     int array1[ARRAYLENGTH] = { 0 };
     int array2[ARRAYLENGTH] = { 0 };
     int array3[ARRAYLENGTH] = { 0 };
+    randomArrayGeneration(array3, ARRAYLENGTH, 1000);
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
         array1[i] = i;
         array2[i] = 100000 - i;
-        array3[i] = rand() % 1000;
     }
     qsort(array1, 0, ARRAYLENGTH - 1);
     if (!isSortedTest(array1, ARRAYLENGTH))
@@ -167,15 +183,9 @@ bool binarySearchTest(void)
 {
     int array1[15] = { 1, 3, 5, 7, 11, 13, 14, 19, 20, 21, 21, 23, 25, 27, 29 };
     int array2[15] = { 0 };
-    for (int i = 0; i < 15; i++)
-    {
-        array2[i] = rand() % 30;
-    }
+    randomArrayGeneration(array2, 15, 30);
     int searchingElements[30] = { 0 };
-    for (int i = 0; i < 30; i++)
-    {
-        searchingElements[i] = rand() % 35;
-    }
+    randomArrayGeneration(searchingElements, 30, 35);
     qsort(array2, 0, 14);
     for (int i = 0; i < 30; i++)
     {
@@ -185,10 +195,7 @@ bool binarySearchTest(void)
             return false;
         }
     }
-    for (int i = 0; i < 30; i++)
-    {
-        searchingElements[i] = rand() % 35;
-    }
+    randomArrayGeneration(searchingElements, 30, 35);
     for (int i = 0; i < 30; i++)
     {
         if (linearSearch(array2, 15, searchingElements[i]) != binarySearch(array2, 15, searchingElements[i]))
@@ -202,12 +209,42 @@ bool binarySearchTest(void)
             return false;
         }
     }
+    return true;
+}
+
+bool test(void)
+{
+    if (!qsortTest() || !insertionSortTest() || !binarySearchTest())
+    {
+        return false;
+    }
+    return true;
+}
+
+void SearchTaskSolve(const int arrayLength, const int searchingElementsNumber)
+{
+    int* array = (int*)calloc(arrayLength, sizeof(int));
+    int* searchingElements = (int*)calloc(searchingElementsNumber, sizeof(int));
+    randomArrayGeneration(array, arrayLength, 100);
+    randomArrayGeneration(searchingElements, searchingElementsNumber, 100);
+    qsort(array, 0, arrayLength - 1);
+    for (int i = 0; i < searchingElementsNumber; i++)
+    {
+        if (binarySearch(array, arrayLength, searchingElements[i]))
+        {
+            printf("Number %d is in the array", searchingElements[i]);
+        }
+        else
+        {
+            printf("Number %d is not in the array", searchingElements[i]);
+        }
+    }
 }
 
 int main()
 {
     srand(time(NULL));
-    if (!qsortTest() || !insertionSortTest() || !binarySearchTest())
+    if (!test())
     {
         return 0;
     }
