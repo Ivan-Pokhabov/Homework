@@ -227,6 +227,10 @@ void SearchTaskSolve(const int arrayLength, const int searchingElementsNumber)
     int* searchingElements = (int*)calloc(searchingElementsNumber, sizeof(int));
     randomArrayGeneration(array, arrayLength, 100);
     randomArrayGeneration(searchingElements, searchingElementsNumber, 100);
+    printf("Array is ");
+    printArray(array, arrayLength);
+    printf("\n Searching elements are ");
+    printArray(searchingElements, searchingElementsNumber);
     qsort(array, 0, arrayLength - 1);
     for (int i = 0; i < searchingElementsNumber; i++)
     {
@@ -239,6 +243,8 @@ void SearchTaskSolve(const int arrayLength, const int searchingElementsNumber)
             printf("Number %d is not in the array", searchingElements[i]);
         }
     }
+    free(array);
+    free(searchingElements);
 }
 
 int main()
