@@ -132,6 +132,25 @@ bool qsortTest(void)
     return true;
 }
 
+bool binarySearch(int array[], const int arrayLength, const int searchingElement)
+{
+    int leftBorder = 0;
+    int rightBorder = arrayLength;
+    while (leftBorder < rightBorder - 1)
+    {
+        const int middle = (leftBorder + rightBorder) / 2;
+        if (array[middle] > searchingElement)
+        {
+            rightBorder = middle;
+        }
+        else
+        {
+            leftBorder = middle;
+        }
+    }
+    return array[leftBorder] == searchingElement;
+}
+
 int main()
 {
     srand(time(NULL));
