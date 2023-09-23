@@ -151,11 +151,65 @@ bool binarySearch(int array[], const int arrayLength, const int searchingElement
     return array[leftBorder] == searchingElement;
 }
 
+bool linearSearch(int array[], const int arrayLength, const int searchingElement)
+{
+    for (int i = 0; i < arrayLength; i++)
+    {
+        if (array[i] == searchingElement)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool binarySearchTest(void)
+{
+    int array1[15] = { 1, 3, 5, 7, 11, 13, 14, 19, 20, 21, 21, 23, 25, 27, 29 };
+    int array2[15] = { 0 };
+    for (int i = 0; i < 15; i++)
+    {
+        array2[i] = rand() % 30;
+    }
+    int searchingElements[30] = { 0 };
+    for (int i = 0; i < 30; i++)
+    {
+        searchingElements[i] = rand() % 35;
+    }
+    qsort(array2, 0, 14);
+    for (int i = 0; i < 30; i++)
+    {
+        if (linearSearch(array1, 15, searchingElements[i]) != binarySearch(array1, 15, searchingElements[i]))
+        {
+            printf("Binary search is not working with array1 and number - %d", searchingElements[i]);
+            return false;
+        }
+    }
+    for (int i = 0; i < 30; i++)
+    {
+        searchingElements[i] = rand() % 35;
+    }
+    for (int i = 0; i < 30; i++)
+    {
+        if (linearSearch(array2, 15, searchingElements[i]) != binarySearch(array2, 15, searchingElements[i]))
+        {
+            printf("Binary search is not working with array2 :\n");
+            for (int i = 0; i < 15; i++)
+            {
+                printf("%d ", array2[i]);
+            }
+            printf("\nAnd number - %d", searchingElements[i]);
+            return false;
+        }
+    }
+}
+
 int main()
 {
     srand(time(NULL));
-    if (!qsortTest() || !insertionSortTest())
+    if (!qsortTest() || !insertionSortTest() || !binarySearchTest())
     {
         return 0;
     }
+    printf("xxx");
 }
