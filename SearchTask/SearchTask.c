@@ -306,7 +306,7 @@ int main()
     const int arrayLength = 0;
     const int searchingElementsNumber = 0;
     printf("Enter n and k: ");
-    if (scanf_s("%d %d", &arrayLength, &searchingElementsNumber) != 2)
+    if (scanf_s("%d %d", &arrayLength, &searchingElementsNumber) != 2 || arrayLength < 0 || searchingElementsNumber < 0)
     {
         printf("Input is incorrect");
         return 0;
