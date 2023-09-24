@@ -5,6 +5,11 @@
 
 void printArray(int array[], const int arrayLength)
 {
+    if (arrayLength == 0)
+    {
+        printf("None");
+        return;
+    }
     for (int i = 0; i < arrayLength; i++)
     {
         printf("%d ", array[i]);
@@ -212,39 +217,83 @@ bool binarySearchTest(void)
     return true;
 }
 
-bool test(void)
+void findAllElements(const int arrayLength, const int searchingElementsNumber, int array[], int searchingElements[], int foundElementsArray[], int* foundElementsArrayLength)
 {
-    if (!qsortTest() || !insertionSortTest() || !binarySearchTest())
+    qsort(array, 0, arrayLength - 1);
+    for (int i = 0; i < searchingElementsNumber; i++)
     {
-        return false;
+        if (binarySearch(array, arrayLength, searchingElements[i]))
+        {
+            foundElementsArray[*foundElementsArrayLength] = searchingElements[i];
+            (*foundElementsArrayLength)++;
+        }
     }
-    return true;
 }
 
 void searchTaskSolve(const int arrayLength, const int searchingElementsNumber)
 {
     int* array = (int*)calloc(arrayLength, sizeof(int));
     int* searchingElements = (int*)calloc(searchingElementsNumber, sizeof(int));
+    int* foundElementsArray = (int*)calloc(searchingElementsNumber, sizeof(int));
+    int foundElementsArrayLength = 0;
     randomArrayGeneration(array, arrayLength, 100);
     randomArrayGeneration(searchingElements, searchingElementsNumber, 100);
+    findAllElements(arrayLength, searchingElementsNumber, array, searchingElements, foundElementsArray, &foundElementsArrayLength);
     printf("Array is ");
     printArray(array, arrayLength);
     printf("\nSearching elements are ");
     printArray(searchingElements, searchingElementsNumber);
-    qsort(array, 0, arrayLength - 1);
+    printf("\nFound elements are ");
+    printArray(foundElementsArray, foundElementsArrayLength);
+    free(array);
+    free(searchingElements);
+    free(foundElementsArray);
+}
+
+bool findAllElementsTest(void)
+{
+    const int arrayLength = 10;
+    const int searchingElementsNumber = 10;
+    int* array = (int*)calloc(arrayLength, sizeof(int));
+    int* searchingElements = (int*)calloc(searchingElementsNumber, sizeof(int));
+    int* foundElementsArray = (int*)calloc(searchingElementsNumber, sizeof(int));
+    randomArrayGeneration(array, arrayLength, 10);
+    randomArrayGeneration(searchingElements, searchingElementsNumber, 10);
+    int foundElementsArrayLength = 0;
+    findAllElements(arrayLength, searchingElementsNumber, array, searchingElements, foundElementsArray, &foundElementsArrayLength);
+    int newFoundElementIndex = 0;
     for (int i = 0; i < searchingElementsNumber; i++)
     {
-        if (binarySearch(array, arrayLength, searchingElements[i]))
+        if (linearSearch(array, arrayLength, searchingElements[i]))
         {
-            printf("\nNumber %d is in the array", searchingElements[i]);
-        }
-        else
-        {
-            printf("\nNumber %d is not in the array", searchingElements[i]);
+            if (newFoundElementIndex >= foundElementsArrayLength || searchingElements[i] != foundElementsArray[newFoundElementIndex])
+            {
+                printf("SearchTaskSolve working incorrect with\nArrray: ");
+                printArray(array, arrayLength);
+                printf("\nAnd searching elements : ");
+                printArray(searchingElements, searchingElementsNumber);
+                printf("%d", searchingElements[i]);
+                free(array);
+                free(searchingElements);
+                free(foundElementsArray);
+                return false;
+            }
+            newFoundElementIndex++;
         }
     }
     free(array);
     free(searchingElements);
+    free(foundElementsArray);
+    return true;
+}
+
+bool test(void)
+{
+    if (!qsortTest() || !insertionSortTest() || !binarySearchTest() || !findAllElementsTest())
+    {
+        return false;
+    }
+    return true;
 }
 
 int main()
@@ -257,6 +306,10 @@ int main()
     const int arrayLength = 0;
     const int searchingElementsNumber = 0;
     printf("Enter n and k: ");
-    scanf_s("%d %d", &arrayLength, &searchingElementsNumber);
+    if (scanf_s("%d %d", &arrayLength, &searchingElementsNumber) != 2)
+    {
+        printf("Input is incorrect");
+        return 0;
+    }
     searchTaskSolve(arrayLength, searchingElementsNumber);
 }
