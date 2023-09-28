@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BinaryRepresentation.cpp">
+    <ClCompile Include="BinaryRepresentation.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
