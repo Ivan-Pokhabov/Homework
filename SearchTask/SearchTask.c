@@ -1,6 +1,8 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
+
 #define ARRAYLENGTH 10000
 
 void printArray(int array[], const int arrayLength)
@@ -48,8 +50,14 @@ void qsort(int array[], const int leftBorder, const int rightBorder)
     int rightIndex = rightBorder;
     do
     {
-        while (supportElement > array[leftIndex]) leftIndex++;
-        while (supportElement < array[rightIndex]) rightIndex--;
+        while (supportElement > array[leftIndex])
+        {
+            leftIndex++;
+        }
+        while (supportElement < array[rightIndex])
+        {
+            rightIndex--;
+        }
         if (leftIndex <= rightIndex)
         {
             const int swap = array[leftIndex];
