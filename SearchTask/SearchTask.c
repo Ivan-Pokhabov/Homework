@@ -1,6 +1,8 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <stdbool.h>
+
 #define ARRAYLENGTH 10000
 
 void printArray(int array[], const int arrayLength)
