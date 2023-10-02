@@ -2,13 +2,14 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
 #define ARRAYLENGTH 100000
 
-void bubbleSort(int array[])
+void bubbleSort(int array[], const int arrayLength)
 {
-    for (int i = 0; i < ARRAYLENGTH; i++)
+    for (int i = 0; i < arrayLength; i++)
     {
-        for (int j = 0; j < ARRAYLENGTH - i - 1; j++)
+        for (int j = 0; j < arrayLength - i - 1; j++)
         {
             if (array[j] > array[j + 1])
             {
@@ -20,32 +21,33 @@ void bubbleSort(int array[])
     }
 }
 
-void countingSort(int array[])
+void countingSort(int array[], const int arrayLength)
 {
-    int maximumValue = -100000000;
-    int nonNegativeAddition = 100000000;
+    int maximumValue = array[0];
+    int minimumValue = array[0];
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
-        maximumValue = max(maximumValue, array[i]);
-        nonNegativeAddition = min(nonNegativeAddition, array[i]);
+        if (maximumValue < array[i])
+        {
+            maximumValue = array[i];
+        }
+        if (minimumValue > array[i])
+        {
+            minimumValue = array[i];
+        }
     }
-    nonNegativeAddition = max(0, nonNegativeAddition);
-    const int countingArrayLength = maximumValue + nonNegativeAddition + 1;
-    int* countingArray = (int*)malloc((countingArrayLength) * sizeof(int));
-    for (int i = 0; i < countingArrayLength; i++)
+    const int countingArrayLength = maximumValue - minimumValue + 1;
+    int* countingArray = (int*)calloc(countingArrayLength, sizeof(int));
+    for (int i = 0; i < arrayLength; i++)
     {
-        countingArray[i] = 0;
-    }
-    for (int i = 0; i < ARRAYLENGTH; i++)
-    {
-        countingArray[array[i]]++;
+        countingArray[array[i] - minimumValue]++;
     }
     int currentIndex = 0;
     for (int i = 0; i < countingArrayLength; i++)
     {
         for (int j = currentIndex; j < countingArray[i] + currentIndex; j++)
         {
-            array[j] = i - nonNegativeAddition;
+            array[j] = i + minimumValue;
         }
         currentIndex += countingArray[i];
     }
@@ -63,7 +65,7 @@ void printArray(int array[])
 double timeCheckBubbleSort(int array[])
 {
     clock_t startBubleSort = clock();
-    bubbleSort(array);
+    bubbleSort(array, ARRAYLENGTH);
     clock_t endBubleSort = clock();
     return (double)(endBubleSort - startBubleSort) / CLK_TCK;
 }
@@ -71,7 +73,7 @@ double timeCheckBubbleSort(int array[])
 double timeCheckCountingSort(int array[])
 {
     clock_t startCountingSort = clock();
-    countingSort(array);
+    countingSort(array, ARRAYLENGTH);
     clock_t endCountingSort = clock();
     return (double)(endCountingSort - startCountingSort) / CLK_TCK;
 }
