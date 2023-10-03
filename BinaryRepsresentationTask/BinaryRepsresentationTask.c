@@ -53,8 +53,6 @@ void numberDecimalReference(int *number, int binaryNumber[32])
             binaryNumber[i] ^= 1;
         }
         addition(one, binaryNumber, binaryNumber);
-        //printf("!");
-       // printBinaryNumber(binaryNumber, 32);
     }
     for (int i = 31; i > 0; --i)
     {
@@ -69,24 +67,26 @@ void numberDecimalReference(int *number, int binaryNumber[32])
     }
 }
 
-int main()
+void binaryRepresentationTaskSolve(void)
 {
-    int num1 = -5;
-    int num2 = -3;
-    int num3 = 0;
-    int num4 = 0;
-    int number1[32] = { 0 };
-    int number2[32] = { 0 };
-    numberBinaryReference(num1, number1);
-    numberBinaryReference(num2, number2);
-    printBinaryNumber(number1, 32);
-    printBinaryNumber(number2, 32);
+    const int number1 = 0;
+    const int number2 = 0;
+    scanf_s("%d %d", &number1, &number2);
+    int binaryNumber1[32] = { 0 };
+    int binaryNumber2[32] = { 0 };
+    numberBinaryReference(number1, binaryNumber1);
+    numberBinaryReference(number2, binaryNumber2);
+    printBinaryNumber(binaryNumber1, 32);
+    printBinaryNumber(binaryNumber2, 32);
     int sum[32] = { 0 };
-    addition(number1, number2, sum);
+    addition(binaryNumber1, binaryNumber2, sum);
     printBinaryNumber(sum, 32);
-    numberDecimalReference(&num3, number1);
-    numberDecimalReference(&num4, number2);
     int num = 0;
     numberDecimalReference(&num, sum);
-    printf("%d\n%d\n%d", num3, num4, num);
+    printf("%d", num);
+}
+
+int main()
+{
+    binaryRepresentationTaskSolve();
 }
