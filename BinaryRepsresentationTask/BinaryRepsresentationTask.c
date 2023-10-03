@@ -1,4 +1,5 @@
 ﻿#include <stdio.h>
+#include <locale.h>
 
 void printBinaryNumber(int array[], const int arrayLength)
 {
@@ -71,22 +72,27 @@ void binaryRepresentationTaskSolve(void)
 {
     const int number1 = 0;
     const int number2 = 0;
-    scanf_s("%d %d", &number1, &number2);
+    if (scanf_s("%d %d", &number1, &number2) != 2);
+    {
+        printf("Вы ввели некорректные данные, пожалуйста, попробуйте снова.");
+        return;
+    }
     int binaryNumber1[32] = { 0 };
     int binaryNumber2[32] = { 0 };
     numberBinaryReference(number1, binaryNumber1);
     numberBinaryReference(number2, binaryNumber2);
     printBinaryNumber(binaryNumber1, 32);
     printBinaryNumber(binaryNumber2, 32);
-    int sum[32] = { 0 };
-    addition(binaryNumber1, binaryNumber2, sum);
-    printBinaryNumber(sum, 32);
-    int num = 0;
-    numberDecimalReference(&num, sum);
-    printf("%d", num);
+    int binarySum[32] = { 0 };
+    addition(binaryNumber1, binaryNumber2, binarySum);
+    printBinaryNumber(binarySum, 32);
+    int sum = 0;
+    numberDecimalReference(&sum, binarySum);
+    printf("%d", sum);
 }
 
 int main()
 {
+    setlocale(LC_ALL, "Russian");
     binaryRepresentationTaskSolve();
 }
