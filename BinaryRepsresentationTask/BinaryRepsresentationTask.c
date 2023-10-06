@@ -71,16 +71,8 @@ void numberDecimalReference(int *number, int binaryNumber[binaryNumberSize])
     }
 }
 
-void binaryRepresentationTaskSolve(void)
+void binaryRepresentationTaskSolve(const int number1, const int number2)
 {
-    printf("Введите 2 числа сумма, которых не превышает число %d по модулю : ", (1 << (binaryNumberSize - 1)) - 1);
-    const int number1 = 0;
-    const int number2 = 0;
-    if (scanf_s("%d %d", &number1, &number2) != 2)
-    {
-        printf("Вы ввели некорректные данные, пожалуйста, попробуйте снова.");
-        return;
-    }
     int binaryNumber1[binaryNumberSize] = { 0 };
     int binaryNumber2[binaryNumberSize] = { 0 };
     numberBinaryReference(number1, binaryNumber1);
@@ -98,6 +90,7 @@ void binaryRepresentationTaskSolve(void)
     numberDecimalReference(&sum, binarySum);
     printf("%d", sum);
 }
+
 bool checkArraysEqual(int array1[], int array2[], int size)
 {
     for (int i = 0; i < size; ++i)
@@ -226,7 +219,7 @@ bool additionTest(void)
     {
         binaryNumber1[i] = 1;
     }
-    binaryNumber2[31] = 1;
+    binaryNumber2[binaryNumberSize - 1] = 1;
     addition(binaryNumber1, binaryNumber2, binarySum);
     if (!checkArraysEqual(binarySum, check, binaryNumberSize))
     {
@@ -235,8 +228,8 @@ bool additionTest(void)
         printBinaryNumber(binaryNumber2, binaryNumberSize);
         return false;
     }
-    binaryNumber2[29] = 1;
-    check[29] = 1;
+    binaryNumber2[binaryNumberSize - 3] = 1;
+    check[binaryNumberSize - 3] = 1;
     addition(binaryNumber1, binaryNumber2, binarySum);
     if (!checkArraysEqual(binarySum, check, binaryNumberSize))
     {
@@ -252,8 +245,8 @@ bool additionTest(void)
         binarySum[i] = 0;
         check[i] ^= 1;
     }
-    check[31] = 0;
-    binaryNumber2[29] = 0;
+    check[binaryNumberSize - 1] = 0;
+    binaryNumber2[binaryNumberSize - 3] = 0;
     addition(binaryNumber1, binaryNumber2, binarySum);
     if (!checkArraysEqual(binarySum, check, binaryNumberSize))
     {
@@ -269,11 +262,11 @@ bool additionTest(void)
         binaryNumber1[i] = 0;
         binaryNumber2[i] = 0;
     }
-    binaryNumber2[29] = 1;
-    binaryNumber1[29] = 1;
-    binaryNumber1[31] = 1;
-    check[28] = 1;
-    check[31] = 1;
+    binaryNumber2[binaryNumberSize - 3] = 1;
+    binaryNumber1[binaryNumberSize - 3] = 1;
+    binaryNumber1[binaryNumberSize - 1] = 1;
+    check[binaryNumberSize - 4] = 1;
+    check[binaryNumberSize - 1] = 1;
     addition(binaryNumber1, binaryNumber2, binarySum);
     if (!checkArraysEqual(binarySum, check, binaryNumberSize))
     {
@@ -285,11 +278,29 @@ bool additionTest(void)
     return true;
 }
 
+bool test(void)
+{
+    if (!numberBinaryReferenceTest() || !numberDecimalReferenceTest() || !additionTest())
+    {
+        return false;
+    }
+    return true;
+}
+
 int main()
 {
     setlocale(LC_ALL, "Russian");
-    numberBinaryReferenceTest();
-    numberDecimalReferenceTest();
-    additionTest();
-    binaryRepresentationTaskSolve();
+    if (!test())
+    {
+        return 0;
+    }
+    int number1 = 0;
+    int number2 = 0;
+    printf("Введите 2 числа, сумма которых по модулю не превышает %d : ", (1 << (binaryNumberSize - 1)) - 1);
+    if (scanf_s("%d %d", &number1, &number2) != 2)
+    {
+        printf("Вы ввели некорректные входные данные.");
+        return 0;
+    }
+    binaryRepresentationTaskSolve(number1, number2);
 }
