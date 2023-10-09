@@ -210,8 +210,8 @@ bool findMostFrequentElementTest(void)
         printf("findMostFrequentElement is not working with array2");
         return false;
     }
-    int maximumValue = -100000000;
-    int minimumValue = 0;
+    int maximumValue = randomArray[0];
+    int minimumValue = randomArray[0];
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
         if (maximumValue < randomArray[i])
@@ -240,8 +240,10 @@ bool findMostFrequentElementTest(void)
         printf("%d %d\n", countingArray[findMostFrequentElement(randomArray, ARRAYLENGTH) - minimumValue], randomArrayMostFrequentElementNumber);
         printf("findMostFrequentElement is not working with randomArray : ");
         printArray(randomArray, ARRAYLENGTH);
+        free(countingArray);
         return false;
     }
+    free(countingArray);
     return true;
 }
 
