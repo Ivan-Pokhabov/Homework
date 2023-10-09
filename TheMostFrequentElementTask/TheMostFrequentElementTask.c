@@ -211,25 +211,30 @@ bool findMostFrequentElementTest(void)
         return false;
     }
     int maximumValue = -100000000;
-    int nonNegativeAddition = 0;
+    int minimumValue = 0;
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
-        maximumValue = max(maximumValue, randomArray[i]);
-        nonNegativeAddition = min(nonNegativeAddition, randomArray[i]);
+        if (maximumValue < randomArray[i])
+        {
+            maximumValue = randomArray[i];
+        }
+        if (minimumValue > randomArray[i])
+        {
+            minimumValue = randomArray[i];
+        }
     }
-    nonNegativeAddition *= -1;
-    const int countingArrayLength = maximumValue + nonNegativeAddition + 1;
+    const int countingArrayLength = maximumValue - minimumValue + 1;
     int* countingArray = (int*)calloc(countingArrayLength, sizeof(int));
     int randomArrayMostFrequentElementNumber = 0;
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
-        countingArray[randomArray[i] + nonNegativeAddition]++;
-        randomArrayMostFrequentElementNumber = max(countingArray[randomArray[i] + nonNegativeAddition], randomArrayMostFrequentElementNumber);
+        countingArray[randomArray[i] - minimumValue]++;
+        randomArrayMostFrequentElementNumber = max(countingArray[randomArray[i] - minimumValue], randomArrayMostFrequentElementNumber);
     }
-    if (countingArray[findMostFrequentElement(randomArray, ARRAYLENGTH) + nonNegativeAddition] != randomArrayMostFrequentElementNumber)
+    if (countingArray[findMostFrequentElement(randomArray, ARRAYLENGTH) - minimumValue] != randomArrayMostFrequentElementNumber)
     {
         printf("%d\n", findMostFrequentElement(randomArray, ARRAYLENGTH));
-        printf("%d %d\n", countingArray[findMostFrequentElement(randomArray, ARRAYLENGTH) + nonNegativeAddition], randomArrayMostFrequentElementNumber);
+        printf("%d %d\n", countingArray[findMostFrequentElement(randomArray, ARRAYLENGTH) - minimumValue], randomArrayMostFrequentElementNumber);
         printf("findMostFrequentElement is not working with randomArray : ");
         printArray(randomArray, ARRAYLENGTH);
         return false;
