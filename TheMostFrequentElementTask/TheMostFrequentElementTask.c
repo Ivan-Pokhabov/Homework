@@ -229,7 +229,10 @@ bool findMostFrequentElementTest(void)
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
         countingArray[randomArray[i] - minimumValue]++;
-        randomArrayMostFrequentElementNumber = max(countingArray[randomArray[i] - minimumValue], randomArrayMostFrequentElementNumber);
+        if (countingArray[randomArray[i] - minimumValue] > randomArrayMostFrequentElementNumber)
+        {
+            randomArrayMostFrequentElementNumber = countingArray[randomArray[i] - minimumValue];
+        }
     }
     if (countingArray[findMostFrequentElement(randomArray, ARRAYLENGTH) - minimumValue] != randomArrayMostFrequentElementNumber)
     {
