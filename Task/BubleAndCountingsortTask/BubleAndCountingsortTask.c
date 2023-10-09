@@ -38,6 +38,11 @@ void countingSort(int array[], const int arrayLength)
     }
     const int countingArrayLength = maximumValue - minimumValue + 1;
     int* countingArray = (int*)calloc(countingArrayLength, sizeof(int));
+    if (countingArray == NULL)
+    {
+        printf("Memory error");
+        return false;
+    }
     for (int i = 0; i < arrayLength; i++)
     {
         countingArray[array[i] - minimumValue]++;
