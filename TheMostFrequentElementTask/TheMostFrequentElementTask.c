@@ -225,6 +225,11 @@ bool findMostFrequentElementTest(void)
     }
     const int countingArrayLength = maximumValue - minimumValue + 1;
     int* countingArray = (int*)calloc(countingArrayLength, sizeof(int));
+    if (countingArray == NULL)
+    {
+        printf("Memory limit error");
+        return false;
+    }
     int randomArrayMostFrequentElementNumber = 0;
     for (int i = 0; i < ARRAYLENGTH; i++)
     {
