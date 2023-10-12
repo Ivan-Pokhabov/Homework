@@ -31,35 +31,33 @@ void print(Phonebook phonebook[], const int currentPosition)
     }
 }
 
-void findNumber(const char name[], Phonebook phonebook[], const int currentPosition)
+char* findNumber(const char name[], Phonebook phonebook[], const int currentPosition)
 {
     for (int i = 0; i < currentPosition; ++i)
     {
         if (strcmp(name, phonebook[i].name) == 0)
         {
-            printf("Имя найдено! Телефон : %s\n", phonebook[i].number);
-            return;
+            return phonebook[i].number;
         }
     }
-    printf("Имя не найдено!\n");
+    return "";
 }
 
-void findName(const char number[], Phonebook phonebook[], const int currentPosition)
+char* findName(const char number[], Phonebook phonebook[], const int currentPosition)
 {
     for (int i = 0; i < currentPosition; ++i)
     {
         if (strcmp(number, phonebook[i].number) == 0)
         {
-            printf("Телефон найден! Имя : %s\n", phonebook[i].name);
-            return;
+            return phonebook[i].name;
         }
     }
-    printf("Телефон не найден!\n");
+    return "";
 }
 
 void getFileData(const char fileName[], Phonebook phonebook[], int *currentPosition)
 {
-    FILE* file;
+    FILE* file = NULL;
     fopen_s(&file, fileName, "r");
     if (file == NULL)
     {
@@ -90,7 +88,7 @@ void getFileData(const char fileName[], Phonebook phonebook[], int *currentPosit
 
 void saveFile(const char fileName[], Phonebook phonebook[], const int currentPosition)
 {
-    FILE* file;
+    FILE* file = NULL;
     fopen_s(&file, fileName, "w");
     if (file == NULL)
     {
@@ -145,14 +143,30 @@ void solve(void)
             printf("Введите имя: ");
             const char name[100];
             scanf_s("%s", name, _countof(name));
-            findNumber(name, phonebook, notesCount);
+            char* number = findNumber(name, phonebook, notesCount);
+            if (strlen(number) != 0)
+            {
+                printf("Телефон найден! Номер : %s", number);
+            }
+            else
+            {
+                printf("Телефон не найден.");
+            }
         }
         else if (command == 4)
         {
             printf("Введите номер: ");
             const char number[100];
             scanf_s("%s", number, _countof(number));
-            findName(number, phonebook, notesCount);
+            char* name = findName(number, phonebook, notesCount);
+            if (strlen(name) != 0)
+            {
+                printf("Имя найдено! Имя : %s", number);
+            }
+            else
+            {
+                printf("Имя не найдено.");
+            }
         }
         else
         {
@@ -171,8 +185,43 @@ bool getFileDataTest(Phonebook testbook[], const int notesCount)
     return false;
 }
 
+bool findNumberTest(Phonebook testbook[], const int notesCount)
+{
+    if (strcmp(findNumber("Nastya:)", testbook, notesCount), "+7913575??45") != 0 || strlen(findNumber("Kostya", testbook, notesCount)) != 0)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool findNameTest(Phonebook testbook[], const int notesCount)
+{
+    if (strcmp(findName("+7913575??45", testbook, notesCount), "Nastya:)") != 0 || strlen(findName("111111", testbook, notesCount)) != 0)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool test(void)
+{
+    Phonebook testbook[100];
+    int notesCount = 0;
+    getFileData("test.txt", testbook, &notesCount);
+    if (!getFileDataTest(testbook, notesCount) || !findNumberTest(testbook, notesCount) || !findNameTest(testbook, notesCount)) 
+    {
+        return false;
+    }
+    return true;
+}
+
 int main()
 {
     setlocale(LC_ALL, "Russian");
+    if (!test())
+    {
+        printf("Программа не прошла тесты");
+        return 0;
+    }
     solve();
 }
