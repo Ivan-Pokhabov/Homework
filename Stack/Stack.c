@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int push(Stack** head, const int value)
+int push(Stack** head, const char value)
 {
 	Stack* newHead = malloc(sizeof(Stack));
 	if (newHead == NULL)
 	{
 		return -1;
 	}
-	newHead->value= value;
+	newHead->value = value;
 	newHead->previous = *head;
 	*head = newHead;
 	return 0;
@@ -28,7 +28,7 @@ int pop(Stack** head)
 	return 0;
 }
 
-int top(Stack* head, int error)
+char top(Stack* head, int error)
 {
 	if (head == NULL)
 	{
