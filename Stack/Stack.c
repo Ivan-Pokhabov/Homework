@@ -22,12 +22,7 @@ int pop(Stack** head)
 	{
 		return 1;
 	}
-	Stack* trash = malloc(sizeof(Stack));
-	if (trash == NULL)
-	{
-		return -1;
-	}
-	trash = *head;
+	Stack* trash = *head;
 	*head = (*head)->previous;
 	free(trash);
 	return 0;
@@ -50,12 +45,7 @@ int clear(Stack** head)
 		{
 			return 1;
 		}
-		Stack* trash = malloc(sizeof(Stack));
-		if (trash == NULL)
-		{
-			return -1;
-		}
-		trash = *head;
+		Stack* trash = *head;
 		*head = (*head)->previous;
 		free(trash);
 	}
