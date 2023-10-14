@@ -5,23 +5,30 @@
 
 int main()
 {
-    Stack* head = NULL;
-    push(&head, '2');
-    printf("%d\n", top(head) - '0');
-    push(&head, '3');
-    printf("%d\n", top(head) - '0');
-    pop(&head);
-    printf("%d\n", top(head) - '0');
-    printf("%d\n", clear(&head));
-    push(&head, '5');
-    printf("%d\n", top(head) - '0');
-    push(&head, '6');
-    printf("%d\n", top(head) - '0');
-    push(&head, '7');
-    printf("%d\n", top(head) - '0');
-    pop(&head);
-    printf("%d\n", top(head) - '0');
-    pop(&head);
-    printf("%d\n", top(head) - '0');
-    printf("%d", clear(&head));
+    IntStack* headInt = NULL;
+    pushInt(&headInt, 2);
+    printf("%d\n", topInt(&headInt));
+    pushInt(&headInt, 2);
+    printf("%d\n", topInt(&headInt));
+    popInt(&headInt);
+    printf("%d\n", topInt(&headInt));
+    pushInt(&headInt, 5);
+    printf("%d\n", topInt(&headInt));
+    pushInt(&headInt, 6);
+    printf("%d\n", topInt(&headInt));
+    pushInt(&headInt, 7);
+    printf("%d\n", topInt(&headInt));
+    popInt(&headInt);
+    printf("%d\n", topInt(&headInt));
+    popInt(&headInt);
+    printf("%d\n", topInt(&headInt));
+    CharStack* headChar = NULL;
+    pushChar(&headChar, '+');
+    printf("%c\n", topChar(&headChar));
+    pushChar(&headChar, '-');
+    printf("%c\n", topChar(&headInt));
+    popChar(&headChar);
+    printf("%c\n", topChar(&headChar));
+    clearChar(&headChar);
+    clearInt(&headInt);
 }

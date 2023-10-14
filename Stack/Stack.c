@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int push(Stack** head, const char value)
+int pushChar(CharStack** head, char value)
 {
-	Stack* newHead = malloc(sizeof(Stack));
+	CharStack* newHead = malloc(sizeof(CharStack));
 	if (newHead == NULL)
 	{
 		return -1;
@@ -16,38 +16,69 @@ int push(Stack** head, const char value)
 	return 0;
 }
 
-int pop(Stack** head)
+int pushInt(IntStack** head, int value)
 {
-	if (head == NULL)
+	IntStack* newHead = malloc(sizeof(IntStack));
+	if (newHead == NULL)
 	{
-		return 1;
+		return -1;
 	}
-	Stack* trash = *head;
+	newHead->value = value;
+	newHead->previous = *head;
+	*head = newHead;
+	return 0;
+}
+
+int popChar(CharStack** head)
+{
+	if (*head == NULL)
+	{
+		return -1;
+	}
+	CharStack* trash = *head;
 	*head = (*head)->previous;
 	free(trash);
 	return 0;
 }
 
-char top(Stack* head, int error)
+int popInt(IntStack** head)
 {
-	if (head == NULL)
+	if (*head == NULL)
 	{
-		error = 1;
+		return -1;
 	}
-	return head->value;
+	IntStack* trash = *head;
+	*head = (*head)->previous;
+	free(trash);
+	return 0;
 }
 
-int clear(Stack** head)
+char topChar(CharStack** head)
+{
+	return (*head)->value;
+}
+
+int topInt(IntStack** head)
+{
+	return (*head)->value;
+}
+
+void clearChar(CharStack** head)
 {
 	while (*head != NULL)
 	{
-		if (head == NULL)
-		{
-			return 1;
-		}
-		Stack* trash = *head;
+		CharStack* trash = *head;
 		*head = (*head)->previous;
 		free(trash);
 	}
-	return 0;
+}
+
+void clearInt(IntStack** head)
+{
+	while (*head != NULL)
+	{
+		IntStack* trash = *head;
+		*head = (*head)->previous;
+		free(trash);
+	}
 }
