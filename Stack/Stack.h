@@ -8,7 +8,7 @@ typedef struct
 	struct IntStack* previous;
 } IntStack;
 
-//Структура стека, хранящего символы
+//Структура стека, хранящего символы.
 typedef struct
 {
 	char value;
