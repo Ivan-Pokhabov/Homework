@@ -55,6 +55,11 @@ int main()
 		if (symbol == '-')
 		{
 			char nextsymbol = getchar();
+			if (nextsymbol == '\n')
+			{
+				pushChar(&(calculator.signs), symbol);
+				break;
+			}
 			if (nextsymbol >= '0' && nextsymbol <= '9')
 			{
 				negative = true;
