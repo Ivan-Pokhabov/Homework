@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <locale.h>
 
 typedef struct
 {
@@ -41,9 +42,11 @@ void func(PostfixCalculator* calculator)
 
 int main()
 {	
+	setlocale(LC_ALL, "Russian");
 	PostfixCalculator calculator = { .numbers = NULL, .signs = NULL };
-	char symbol = getchar();
+	printf("Введите числовое выражение в постфиксной форме: ");
 	bool expressionStart = false;
+	char symbol = getchar();
 	while (symbol != EOF && symbol != '\n')
 	{
 		if (symbol == ' ')
@@ -94,7 +97,7 @@ int main()
 		symbol = getchar();
 	}
 	func(&calculator);
-	printf("%d\n", topInt(&(calculator.numbers)));
+	printf("Результат: %d", topInt(&(calculator.numbers)));
 	clearChar(&(calculator.signs));
 	clearInt(&(calculator.numbers));
 }
