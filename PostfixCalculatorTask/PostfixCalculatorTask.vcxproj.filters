@@ -18,12 +18,12 @@
     <ClCompile Include="PostfixCalculatorTask.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Stack\Stack.c">
+    <ClCompile Include="..\Stack\Stack.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Stack\Stack.h">
+    <ClInclude Include="..\Stack\Stack.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
