@@ -1,4 +1,5 @@
-﻿#include "Stack.h"
+﻿#include "CharStack.h"
+#include "IntStack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,7 +27,7 @@ int main()
     pushChar(&headChar, '+');
     printf("%c\n", topChar(&headChar));
     pushChar(&headChar, '-');
-    printf("%c\n", topChar(&headInt));
+    printf("%c\n", topChar(&headChar));
     popChar(&headChar);
     printf("%c\n", topChar(&headChar));
     clearChar(&headChar);
