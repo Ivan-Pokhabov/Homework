@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Stack\Stack.c" />
+    <ClCompile Include="..\Stack\CharStack.c" />
+    <ClCompile Include="..\Stack\IntStack.c" />
     <ClCompile Include="PostfixCalculatorTask.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Stack\Stack.h" />
+    <ClInclude Include="..\Stack\CharStack.h" />
+    <ClInclude Include="..\Stack\IntStack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

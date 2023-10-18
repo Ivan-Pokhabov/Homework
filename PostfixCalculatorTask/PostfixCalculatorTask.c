@@ -1,4 +1,5 @@
-﻿#include "C:/Repos/Homework/Stack/Stack.h"
+﻿#include "../Stack/IntStack.h"
+#include "../Stack/CharStack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
