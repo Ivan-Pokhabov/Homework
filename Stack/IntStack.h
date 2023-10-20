@@ -1,16 +1,24 @@
 #pragma once
 
-//Структура стека, хранящего целые числа.
+//Errors
+typedef enum IntStackErrorCode
+{
+	intOk,
+	intNullptr,
+	intMemoryError
+} IntStackErrorCode;
+
+//Struct of stack consisting of integer numbers
 typedef struct IntStack IntStack;
 
-//Добавлене элемента в начало стека целых чисел. Возвращает -1, если не удалось выделить память под новый элемент стека. Иначе 0.
-int pushInt(IntStack** head, int value);
+//Adding element into the head of stack
+IntStackErrorCode pushInt(IntStack** head, int value);
 
-//Удаление эелемента из начала стека целых чисел. Возвращает -1, при передаче пустого стека.
-int popInt(IntStack** head);
+//Deleting element from the head of stack
+IntStackErrorCode popInt(IntStack** head);
 
-//Взятие первого элемента стека целых чисел
-int topInt(IntStack** head);
+//Taking value from the top of stack
+int topInt(IntStack** head, IntStackErrorCode* errorCode);
 
-//Очистка стека целых чисел
-void clearInt(IntStack** head);
+//Clearing all elements of stack 
+IntStackErrorCode clearInt(IntStack** head);

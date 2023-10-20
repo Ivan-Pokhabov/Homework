@@ -1,16 +1,24 @@
 #pragma once
 
-//Структура стека, хранящего символы.
+//Errors
+typedef enum CharStackErrorCode
+{
+	ok,
+	nullptr,
+	memoryError
+} CharStackErrorCode;
+
+//Struct of stack consisting of chars
 typedef struct CharStack CharStack;
 
-//Добавлене элемента в начало стека символов. Возвращает -1, если не удалось выделить память под новый элемент стека. Иначе 0.
-int pushChar(CharStack** head, char value);
+//Adding element into the head of stack
+CharStackErrorCode pushChar(CharStack** head, char value);
 
-//Удаление эелемента из начала стека символов. Возвращает -1, при передаче пустого стека.
-int popChar(CharStack** head);
+//Deleting element from the head of stack
+CharStackErrorCode popChar(CharStack** head);
 
-//Взятие первого элемента стека символов
-char topChar(CharStack** head);
+//Taking value from the top of stack
+char topChar(CharStack** head, CharStackErrorCode* errorCode);
 
-//Очистка стека символов
-void clearChar(CharStack** head);
+//Clearing all elements of stack 
+CharStackErrorCode clearChar(CharStack** head);
