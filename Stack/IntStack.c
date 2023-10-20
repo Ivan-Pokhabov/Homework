@@ -8,42 +8,52 @@ struct IntStack
 	struct IntStack* previous;
 };
 
-int pushInt(IntStack** head, int value)
+IntStackErrorCode pushInt(IntStack** head, int value)
 {
-	IntStack* newHead = malloc(sizeof(IntStack));
+	IntStack* newHead = calloc(1, sizeof(IntStack));
 	if (newHead == NULL)
 	{
-		return -1;
+		return intMemoryError;
 	}
 	newHead->value = value;
 	newHead->previous = *head;
 	*head = newHead;
-	return 0;
+	return intOk;
 }
 
-int popInt(IntStack** head)
+IntStackErrorCode popInt(IntStack** head)
 {
-	if (*head == NULL)
+	if (head == NULL || *head == NULL)
 	{
-		return -1;
+		return intNullptr;
 	}
 	IntStack* trash = *head;
 	*head = (*head)->previous;
 	free(trash);
-	return 0;
+	return intOk;
 }
 
-int topInt(IntStack** head)
+int topInt(IntStack** head, IntStackErrorCode *errorCode)
 {
+	if (head == NULL || *head == NULL)
+	{
+		*errorCode = intNullptr;
+		return -1;
+	}
 	return (*head)->value;
 }
 
-void clearInt(IntStack** head)
+IntStackErrorCode clearInt(IntStack** head)
 {
+	if (head == NULL)
+	{
+		return intNullptr;
+	}
 	while (*head != NULL)
 	{
 		IntStack* trash = *head;
 		*head = (*head)->previous;
 		free(trash);
 	}
+	return intOk;
 }
