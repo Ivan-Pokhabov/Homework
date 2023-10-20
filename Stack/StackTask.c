@@ -27,7 +27,7 @@ int main()
     printf("! %d\n", intErrorCode);
     CharStack* headChar = NULL;
     pushChar(&headChar, '+');
-    CharStackErrorCode charErrorCode = ok;
+    CharStackErrorCode charErrorCode = charOk;
     printf("%c\n", topChar(&headChar, &charErrorCode));
     pushChar(&headChar, '-');
     printf("%c\n", topChar(&headChar, &charErrorCode));
