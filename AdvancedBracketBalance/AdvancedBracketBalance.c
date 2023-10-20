@@ -6,7 +6,8 @@
 typedef enum ErrorCode
 {
     ok,
-    invalidInput
+    invalidInput,
+    stackError
 } ErrorCode;
 
 bool bracketCompare(char leftBracket, char rightBracket)
@@ -22,7 +23,7 @@ bool bracketCompare(char leftBracket, char rightBracket)
     }
 }
 
-bool isBalanced(FILE* file, ErrorCode *errorCode)
+bool isBalanced(FILE* file, ErrorCode *errorCode, CharStackErrorCode *stackErrorCode)
 {
     CharStack* bracketStack = NULL;
     char symbol = getc(file);
@@ -38,12 +39,22 @@ bool isBalanced(FILE* file, ErrorCode *errorCode)
         }
         else if (symbol == '(' || symbol == '{' || symbol == '[')
         {
-            pushChar(&bracketStack, symbol);
+            if (pushChar(&bracketStack, symbol) != 0)
+            {
+                *errorCode = stackError;
+                clearChar(&bracketStack);
+                return false;
+            }
         }
         else if (symbol == ')' || symbol == '}' || symbol == ']')
         {
-            if (bracketStack == NULL || !bracketCompare(topChar(&bracketStack), symbol))
+            if (!bracketCompare(topChar(&bracketStack, stackErrorCode), symbol))
             {
+                if (*stackErrorCode != charOk)
+                {
+                    *errorCode = stackError;
+                }
+                clearChar(&bracketStack);
                 return false;
             }
             popChar(&bracketStack);
@@ -51,15 +62,17 @@ bool isBalanced(FILE* file, ErrorCode *errorCode)
         else
         {
             *errorCode = invalidInput;
+            clearChar(&bracketStack);
             return false;
         }
         symbol = getc(file);
     }
     if (bracketStack != NULL)
     {
-        return false;
         clearChar(&bracketStack);
+        return false;
     }
+    clearChar(&bracketStack);
     return true;
 }
 
@@ -68,31 +81,25 @@ bool test(void)
     FILE* file = NULL;
     fopen_s(&file, "test1.txt", "r");
     ErrorCode errorCode = ok;
+    CharStackErrorCode stackErrorCode = charOk;
     bool errors[4] = { true, true, true, true };
-    if (!isBalanced(file, &errorCode) || errorCode != ok)
+    if (!isBalanced(file, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk)
     {
-        printf("Program is not working with test case 1");
         errors[0] = false;
     }
     fopen_s(&file, "test2.txt", "r");
-    errorCode = ok;
-    if (!isBalanced(file, &errorCode) || errorCode != ok)
+    if (!isBalanced(file, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk)
     {
-        printf("Program is not working with test case 2");
         errors[1] = false;
     }
     fopen_s(&file, "test3.txt", "r");
-    errorCode = ok;
-    if (isBalanced(file, &errorCode) || errorCode != ok)
+    if (isBalanced(file, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk)
     {
-        printf("Program is not working with test case 3");
         errors[2] = false;
     }
     fopen_s(&file, "test4.txt", "r");
-    errorCode = ok;
-    if (!isBalanced(file, &errorCode) && errorCode == ok)
+    if (!isBalanced(file, &errorCode, &stackErrorCode) && errorCode == ok || stackErrorCode != charOk)
     {
-        printf("Program is not working with test case 4");
         errors[3] = false;
     }
     bool compliteTests = true;
@@ -110,11 +117,13 @@ bool test(void)
 int main()
 {
     ErrorCode errorCode = ok;
+    CharStackErrorCode stackErrorCode = charOk;
     if (!test())
     {
         return 0;
     }
-    if (isBalanced(stdin, &errorCode))
+    printf("Enter your bracket subsequence: ");
+    if (isBalanced(stdin, &errorCode, &stackErrorCode))
     {
         printf("Your bracket subsequence is balanced");
     }
@@ -122,8 +131,19 @@ int main()
     {
         printf("Your input is invalid");
     }
+    else if (errorCode == ok)
+    {
+        printf("Your bracket subsequence is not balanced");
+    }
     else
     {
-        printf("Your bracket subsequence is not balanced")
+        if (stackError == charNullptr)
+        {
+            printf("Passing a null pointer");
+        }
+        else
+        {
+            printf("Memory error");
+        }
     }
 }
