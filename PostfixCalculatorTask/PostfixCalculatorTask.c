@@ -11,7 +11,8 @@ typedef enum ErrorCode
 	ok,
 	invalidInput,
 	intStackError,
-	charStackError
+	charStackError,
+	division0
 } ErrorCode;
 
 typedef struct
@@ -70,7 +71,12 @@ void arithmeticOperation(PostfixCalculator* calculator, ErrorCode* errorCode, Ch
 		}
 		else if (sign == '/')
 		{
-			if (pushInt(&(calculator->numbers), number1 * number2) != intOk)
+			if (number2 == 0)
+			{
+				*errorCode = division0;
+				return;
+			}
+			else if (pushInt(&(calculator->numbers), number1 / number2) != intOk)
 			{
 				*intStackErrorCode = intMemoryError;
 				*errorCode = intStackError;
@@ -187,9 +193,56 @@ int postfixCalculator(FILE* file, ErrorCode* errorCode, CharStackErrorCode* char
 	return result;
 }
 
+bool test(void)
+{
+	FILE* file = NULL;
+	bool tests[3] = { true, true, true };
+	fopen_s(&file, "test1.txt", "r");
+	ErrorCode errorCode = ok;
+	CharStackErrorCode charStackErrorCode = charOk;
+	IntStackErrorCode intStackErrorCode = intOk;
+	int result = postfixCalculator(file, &errorCode, &charStackErrorCode, &intStackErrorCode);
+	if (result != -2 || errorCode != ok || charStackErrorCode != charOk || intStackErrorCode != intOk)
+	{
+		tests[0] = false;
+	}
+	fopen_s(&file, "test2.txt", "r");
+	errorCode = ok;
+	charStackErrorCode = charOk;
+	intStackErrorCode = intOk;
+	result = postfixCalculator(file, &errorCode, &charStackErrorCode, &intStackErrorCode);
+	if (errorCode != division0)
+	{
+		tests[1] = false;
+	}
+	fopen_s(&file, "test3.txt", "r");
+	errorCode = ok;
+	charStackErrorCode = charOk;
+	intStackErrorCode = intOk;
+	result = postfixCalculator(file, &errorCode, &charStackErrorCode, &intStackErrorCode);
+	if (result != 15 || errorCode != ok || charStackErrorCode != charOk || intStackErrorCode != intOk)
+	{
+		tests[2] = false;
+	}
+	bool compliteTests = true;
+	for (int i = 0; i < 4; ++i)
+	{
+		if (!tests[i])
+		{
+			printf("Программа не работает с тестовым случаем %d\n", i + 1);
+			compliteTests = false;
+		}
+	}
+	return compliteTests;
+}
+
 int main()
-{	
+{
 	setlocale(LC_ALL, "Russian");
+	if (!test())
+	{
+		return 0;
+	}
 	ErrorCode errorCode = ok;
 	CharStackErrorCode charStackErrorCode = charOk;
 	IntStackErrorCode intStackErrorCode = intOk;
@@ -198,6 +251,10 @@ int main()
 	if (errorCode == ok)
 	{
 		printf("Результат вычислений: %d", result);
+	}
+	else if (errorCode == division0)
+	{
+		printf("На 0 делить нельзя. Некорреткное выражение");
 	}
 	else if (errorCode == charStackError)
 	{
