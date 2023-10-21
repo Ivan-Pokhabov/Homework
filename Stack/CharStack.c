@@ -8,42 +8,52 @@ struct CharStack
 	struct CharStack* previous;
 };
 
-int pushChar(CharStack** head, char value)
+CharStackErrorCode pushChar(CharStack** head, char value)
 {
 	CharStack* newHead = malloc(sizeof(CharStack));
 	if (newHead == NULL)
 	{
-		return -1;
+		return charMemoryError;
 	}
 	newHead->value = value;
 	newHead->previous = *head;
 	*head = newHead;
-	return 0;
+	return charOk;
 }
 
-int popChar(CharStack** head)
+CharStackErrorCode popChar(CharStack** head)
 {
-	if (*head == NULL)
+	if (head == NULL || *head == NULL)
 	{
-		return -1;
+		return charNullptr;
 	}
 	CharStack* trash = *head;
 	*head = (*head)->previous;
 	free(trash);
-	return 0;
+	return charOk;
 }
 
-char topChar(CharStack** head)
+char topChar(CharStack** head, CharStackErrorCode *errorCode)
 {
+	if (head == NULL || *head == NULL)
+	{
+		*errorCode = charNullptr;
+		return 'x';
+	}
 	return (*head)->value;
 }
 
-void clearChar(CharStack** head)
+CharStackErrorCode clearChar(CharStack** head)
 {
+	if (head == NULL)
+	{
+		return charNullptr;
+	}
 	while (*head != NULL)
 	{
 		CharStack* trash = *head;
 		*head = (*head)->previous;
 		free(trash);
 	}
+	return charOk;
 }
