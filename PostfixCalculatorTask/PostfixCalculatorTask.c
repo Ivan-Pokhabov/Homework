@@ -6,42 +6,90 @@
 #include <stdbool.h>
 #include <locale.h>
 
+typedef enum ErrorCode
+{
+	ok,
+	invalidInput,
+	intStackError,
+	charStackError
+} ErrorCode;
+
 typedef struct
 {
 	IntStack* numbers;
 	CharStack* signs;
 } PostfixCalculator;
 
-void func(PostfixCalculator* calculator)
+void arithmeticOperation(PostfixCalculator* calculator, ErrorCode* errorCode, CharStackErrorCode* charStackErrorCode, IntStackErrorCode* intStackErrorCode)
 {
 	while (calculator->signs != NULL)
 	{
-		char sign = topChar(&(calculator->signs));
-		int number1 = topInt(&(calculator->numbers));
+		char sign = topChar(&(calculator->signs), charStackErrorCode);
+		if (*charStackErrorCode != charOk)
+		{
+			*errorCode = charStackError;
+			return;
+		}
+		int number1 = topInt(&(calculator->numbers), intStackErrorCode);
+		if (*intStackErrorCode != intOk)
+		{
+			*errorCode = intStackError;
+			return;
+		}
 		popInt(&(calculator->numbers));
-		int number2 = topInt(&(calculator->numbers));
+		int number2 = topInt(&(calculator->numbers), intStackErrorCode);
+		if (*intStackErrorCode != intOk)
+		{
+			*errorCode = intStackError;
+			return;
+		}
 		popInt(&(calculator->numbers));
 		if (sign == '+')
 		{
-			pushInt(&(calculator->numbers), number1 + number2);
+			if (pushInt(&(calculator->numbers), number1 + number2) != intOk)
+			{
+				*intStackErrorCode = intMemoryError;
+				*errorCode = intStackError;
+			}
 		}
 		else if (sign == '*')
 		{
-			pushInt(&(calculator->numbers), number1 * number2);
+			if (pushInt(&(calculator->numbers), number1 * number2) != intOk)
+			{
+				*intStackErrorCode = intMemoryError;
+				*errorCode = intStackError;
+			}
 		}
 		else if (sign == '-')
 		{
-			pushInt(&(calculator->numbers), number1 - number2);
+			if (pushInt(&(calculator->numbers), number1 - number2) != intOk)
+			{
+				*intStackErrorCode = intMemoryError;
+				*errorCode = intStackError;
+			}
 		}
 		else if (sign == '/')
 		{
-			pushInt(&(calculator->numbers), number1 / number2);
+			if (pushInt(&(calculator->numbers), number1 * number2) != intOk)
+			{
+				*intStackErrorCode = intMemoryError;
+				*errorCode = intStackError;
+			}
 		}
-		popChar(&(calculator->signs));
+		else
+		{
+			*errorCode = invalidInput;
+			return;
+		}
+		if (popChar(&(calculator->signs)) != charOk)
+		{
+			*charStackErrorCode = charNullptr;
+			*errorCode = charStackError;
+		}
 	}
 }
 
-int postfixCalculator(FILE* file)
+int postfixCalculator(FILE* file, ErrorCode* errorCode, CharStackErrorCode* charStackErrorCode, IntStackErrorCode* intStackErrorCode)
 {
 	PostfixCalculator calculator = { .numbers = NULL, .signs = NULL };
 	bool expressionStart = false;
@@ -59,7 +107,14 @@ int postfixCalculator(FILE* file)
 			char nextsymbol = getc(file);
 			if (nextsymbol == '\n')
 			{
-				pushChar(&(calculator.signs), symbol);
+				if (pushChar(&(calculator.signs), symbol) != charOk)
+				{
+					*charStackErrorCode = charMemoryError;
+					*errorCode = charStackError;
+					clearChar(&(calculator.signs));
+					clearInt(&(calculator.numbers));
+					return -1;
+				}
 				break;
 			}
 			if (nextsymbol >= '0' && nextsymbol <= '9')
@@ -73,7 +128,13 @@ int postfixCalculator(FILE* file)
 			if (expressionStart)
 			{
 				expressionStart = false;
-				func(&calculator);
+				arithmeticOperation(&calculator, errorCode, charStackErrorCode, intStackErrorCode);
+				if (*errorCode != ok || *charStackErrorCode != charOk || *intStackErrorCode != intOk)
+				{
+					clearChar(&(calculator.signs));
+					clearInt(&(calculator.numbers));
+					return -1;
+				}
 			}
 			int number = 0;
 			while (symbol >= '0' && symbol <= '9')
@@ -86,17 +147,41 @@ int postfixCalculator(FILE* file)
 			{
 				number *= -1;
 			}
-			pushInt(&(calculator.numbers), number);
+			if (pushInt(&(calculator.numbers), number) != intOk)
+			{
+				*intStackErrorCode = intMemoryError;
+				*errorCode = intStackError;
+				clearChar(&(calculator.signs));
+				clearInt(&(calculator.numbers));
+				return -1;
+			}
 		}
 		else
 		{
-			pushChar(&(calculator.signs), symbol);
+			if (pushChar(&(calculator.signs), symbol) != charOk)
+			{
+				*charStackErrorCode = charMemoryError;
+				*errorCode = charStackError;
+				clearChar(&(calculator.signs));
+				clearInt(&(calculator.numbers));
+				return -1;
+			}
 			expressionStart = true;
 		}
 		symbol = getc(file);
 	}
-	func(&calculator);
-	int result = topInt(&(calculator.numbers));
+	arithmeticOperation(&calculator, errorCode, charStackErrorCode, intStackErrorCode);
+	if (*errorCode != ok || *charStackErrorCode != charOk || *intStackErrorCode != intOk)
+	{
+		clearChar(&(calculator.signs));
+		clearInt(&(calculator.numbers));
+		return -1;
+	}
+	int result = topInt(&(calculator.numbers), intStackErrorCode);
+	if (*intStackErrorCode != intOk)
+	{
+		*errorCode = intStackError;
+	}
 	clearChar(&(calculator.signs));
 	clearInt(&(calculator.numbers));
 	return result;
@@ -105,6 +190,39 @@ int postfixCalculator(FILE* file)
 int main()
 {	
 	setlocale(LC_ALL, "Russian");
+	ErrorCode errorCode = ok;
+	CharStackErrorCode charStackErrorCode = charOk;
+	IntStackErrorCode intStackErrorCode = intOk;
 	printf("Введите числовое выражение в постфиксной форме: ");
-	printf("Результат: %d", postfixCalculator(stdin));
+	int result = postfixCalculator(stdin, &errorCode, &charStackErrorCode, &intStackErrorCode);
+	if (errorCode == ok)
+	{
+		printf("Результат вычислений: %d", result);
+	}
+	else if (errorCode == charStackError)
+	{
+		if (charStackErrorCode == charNullptr)
+		{
+			printf("Некорректное выражение");
+		}
+		else
+		{
+			printf("Ошибка выделения памяти");
+		}
+	}
+	else if (errorCode == intStackError)
+	{
+		if (intStackErrorCode == intNullptr)
+		{
+			printf("Некорректное выражение");
+		}
+		else
+		{
+			printf("Ошибка выделения памяти");
+		}
+	}
+	else
+	{
+		printf("В выражении присутствуют символы, которые не являются символами калькулятора");
+	}
 }
