@@ -41,24 +41,22 @@ void func(PostfixCalculator* calculator)
 	}
 }
 
-int main()
-{	
-	setlocale(LC_ALL, "Russian");
+int postfixCalculator(FILE* file)
+{
 	PostfixCalculator calculator = { .numbers = NULL, .signs = NULL };
-	printf("Введите числовое выражение в постфиксной форме: ");
 	bool expressionStart = false;
-	char symbol = getchar();
+	char symbol = getc(file);
 	while (symbol != EOF && symbol != '\n')
 	{
 		if (symbol == ' ')
 		{
-			symbol = getchar();
+			symbol = getc(file);
 			continue;
 		}
 		bool negative = false;
 		if (symbol == '-')
 		{
-			char nextsymbol = getchar();
+			char nextsymbol = getc(file);
 			if (nextsymbol == '\n')
 			{
 				pushChar(&(calculator.signs), symbol);
@@ -82,7 +80,7 @@ int main()
 			{
 				number *= 10;
 				number += symbol - '0';
-				symbol = getchar();
+				symbol = getc(file);
 			}
 			if (negative)
 			{
@@ -95,10 +93,18 @@ int main()
 			pushChar(&(calculator.signs), symbol);
 			expressionStart = true;
 		}
-		symbol = getchar();
+		symbol = getc(file);
 	}
 	func(&calculator);
-	printf("Результат: %d", topInt(&(calculator.numbers)));
+	int result = topInt(&(calculator.numbers));
 	clearChar(&(calculator.signs));
 	clearInt(&(calculator.numbers));
+	return result;
+}
+
+int main()
+{	
+	setlocale(LC_ALL, "Russian");
+	printf("Введите числовое выражение в постфиксной форме: ");
+	printf("Результат: %d", postfixCalculator(stdin));
 }
