@@ -1,18 +1,28 @@
 #pragma once
 
+#include <stdbool.h>
+
+typedef enum SortedListErrorCode
+{
+	ok,
+	nullptr,
+	memoryError,
+	deleteNonexistentElement
+} SortedListErrorCode;
+
 typedef struct SortedList SortedList;
 
 SortedList* createSortedList();
 
-int add(SortedList* sortedList, const int value);
+SortedListErrorCode add(SortedList* sortedList, const int value);
 
-int delete(SortedList* sortedList, const int value);
+SortedListErrorCode delete(SortedList* sortedList, const int value);
 
-int front(SortedList* sortedList);
+int front(SortedList* sortedList, SortedListErrorCode* errorCode);
 
-int back(SortedList* sortedList);
+int back(SortedList* sortedList, SortedListErrorCode* errorCode);
 
-int isEmpty(SortedList* sortedList);
+bool isEmpty(SortedList* sortedList);
 
 void deleteSortedList(SortedList** sortedList);
 
