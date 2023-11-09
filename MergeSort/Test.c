@@ -2,7 +2,7 @@
 #include "Phonebook.h"
 
 #include <stdbool.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
 bool test(void)
 {
@@ -15,21 +15,21 @@ bool test(void)
         size_t size = 0;
         if (getFileData(tests[i], phonebook, &size) != ok)
         {
-            printf("Ошибка чтения из файла\n");
+            printf("ГЋГёГЁГЎГЄГ  Г·ГІГҐГ­ГЁГї ГЁГ§ ГґГ Г©Г«Г \n");
             passed = false;
             continue;
         }
         mergeSort(phonebook, 0, size, 1, &errorCode);
         if (errorCode != ok || checkSort(phonebook, 1))
         {
-            printf("Ошибка сортировки по имени\n");
+            printf("ГЋГёГЁГЎГЄГ  Г±Г®Г°ГІГЁГ°Г®ГўГЄГЁ ГЇГ® ГЁГ¬ГҐГ­ГЁ\n");
             passed = false;
         }
         errorCode = ok;
         mergeSort(phonebook, 0, size, 2, &errorCode);
         if (errorCode != ok || checkSort(phonebook, 2))
         {
-            printf("Ошибка сортировки по номеру\n");
+            printf("ГЋГёГЁГЎГЄГ  Г±Г®Г°ГІГЁГ°Г®ГўГЄГЁ ГЇГ® Г­Г®Г¬ГҐГ°Гі\n");
             passed = false;
         }
         deletePhonebook(&phonebook);
