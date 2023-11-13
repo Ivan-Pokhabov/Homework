@@ -22,22 +22,22 @@ SyntaxTree* createSyntaxTree()
 	return calloc(1, sizeof(SyntaxTree));
 }
 
-bool isEmpty(SyntaxTree* tree)
+bool isEmpty(const SyntaxTree* const tree)
 {
 	return tree->root == NULL;
 }
 
-bool isLeaf(Node* node)
+bool isLeaf(const Node* const node)
 {
 	return node->leftChild == NULL && node->rightChild == NULL;
 }
 
-bool isOperation(char symbol)
+bool isOperation(const char symbol)
 {
 	return symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/';
 }
 
-int getNumber(char* expression, int* position)
+int getNumber(const char* expression, int* const position)
 {
 	int number = 0;
 	while (expression[*position] >= '0' && expression[*position] <= '9')
@@ -48,7 +48,7 @@ int getNumber(char* expression, int* position)
 	return number;
 }
 
-Node* newNode(char* expression, int* position)
+Node* newNode(const char* const expression, int* const position)
 {
 	++(*position);
 	while (expression[*position] == ' ' || expression[*position] == '(' || expression[*position] == ')')
@@ -69,15 +69,15 @@ Node* newNode(char* expression, int* position)
 	return node;
 }
 
-SyntaxTree* build(char* expression)
+SyntaxTree* build(const char* const expression)
 {
-	int position = 0;
+	int position = -1;
 	SyntaxTree* tree = createSyntaxTree();
 	tree->root = newNode(expression, &position);
 	return tree;
 }
 
-void printNode(Node* node)
+void printNode(const Node* const node)
 {
 	if (isLeaf(node))
 	{
@@ -89,7 +89,7 @@ void printNode(Node* node)
 	printNode(node->rightChild);
 }
 
-void printSyntaxTree(SyntaxTree* tree)
+void printSyntaxTree(const SyntaxTree* const tree)
 {
 	if (isEmpty(tree))
 	{
@@ -98,7 +98,7 @@ void printSyntaxTree(SyntaxTree* tree)
 	printNode(tree->root);
 }
 
-int calculateSubtree(Node* node)
+int calculateSubtree(const Node* const node)
 {
 	if (isLeaf(node))
 	{
@@ -122,7 +122,7 @@ int calculateSubtree(Node* node)
 	return operand1 / operand2;
 }
 
-int calculate(SyntaxTree* tree)
+int calculate(const SyntaxTree* const tree)
 {
 	return calculateSubtree(tree->root);
 }

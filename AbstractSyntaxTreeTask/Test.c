@@ -63,7 +63,7 @@ bool test3(void)
 	fgets(expression, 1000, file);
 	fclose(file);
 	SyntaxTree* tree = build(expression);
-	if (calculate(tree) != 0)
+	if (calculate(tree) != 1)
 	{
 		passed = false;
 	}

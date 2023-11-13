@@ -5,6 +5,10 @@
 
 int main()
 {
+	if (!test())
+	{
+		return -1;
+	}
 	FILE* file = NULL;
 	fopen_s(&file, "input.txt", "r");
 	if (file == NULL)

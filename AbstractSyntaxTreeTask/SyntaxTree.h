@@ -4,13 +4,13 @@
 typedef struct SyntaxTree SyntaxTree;
 
 // Build syntax treee
-SyntaxTree* build(char* string);
+SyntaxTree* build(const char* const expression);
 
 // Print tree in infix form
-void printSyntaxTree(SyntaxTree* tree);
+void printSyntaxTree(const SyntaxTree* const tree);
 
 // Calculating tree
-int calculate(SyntaxTree* tree);
+int calculate(const SyntaxTree* const tree);
 
 // Deleting tree
 void deleteSyntaxTree(SyntaxTree** tree);
