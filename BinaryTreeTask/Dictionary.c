@@ -88,7 +88,6 @@ char* get(const Node* const node, const int key)
     {
         return NULL;
     }
-
     if (key == node->key)
     {
         return node->value;
@@ -103,7 +102,7 @@ char* get(const Node* const node, const int key)
     }
 }
 
-char* getValue(const BinaryTree* const tree, int key)
+char* getValue(const BinaryTree* const tree, const int key)
 {
     return get(tree->root, key);
 }
@@ -114,18 +113,17 @@ bool find(const Node* const node, const int key)
     {
         return false;
     }
-
     if (key == node->key)
     {
         return true;
     }
     if (key < node->key)
     {
-        get(node->leftChild, key);
+        find(node->leftChild, key);
     }
     else
     {
-        get(node->rightChild, key);
+        find(node->rightChild, key);
     }
 }
 
@@ -143,7 +141,6 @@ Node* findNodeClosestToNode(const Node* const node)
         rightmostNodeOnTheLeft = rightmostNodeOnTheLeft->rightChild;
         leftPathLength++;
     }
-
     Node* leftmostNodeOnTheLeft = node->rightChild;
     int rightPathLength = 1;
     while (leftmostNodeOnTheLeft->leftChild != NULL)
@@ -151,7 +148,6 @@ Node* findNodeClosestToNode(const Node* const node)
         leftmostNodeOnTheLeft = leftmostNodeOnTheLeft->leftChild;
         rightPathLength++;
     }
-
     if (leftPathLength > rightPathLength) 
     {
         return rightmostNodeOnTheLeft;
@@ -249,7 +245,7 @@ void deleteRoot(BinaryTree* const tree)
     tree->root = newRoot;
 }
 
-void deleteValue(const BinaryTree* const tree, int key)
+void deleteValue(const BinaryTree* const tree, const int key)
 {
     if (tree == NULL)
     {
@@ -287,9 +283,9 @@ void deleteBinaryTree(const BinaryTree** const tree)
 
 void instructions(void)
 {
-    printf("0 - Выйти\n");
-    printf("1 - Добавить значение по ключу\n");
-    printf("2 - Найти значение по ключу\n");
-    printf("3 - Проверить существование ключа\n");
-    printf("4 - Удалить ключ и значение\n");
+    printf("0 - Г‚Г»Г©ГІГЁ\n");
+    printf("1 - Г„Г®ГЎГ ГўГЁГІГј Г§Г­Г Г·ГҐГ­ГЁГҐ ГЇГ® ГЄГ«ГѕГ·Гі\n");
+    printf("2 - ГЌГ Г©ГІГЁ Г§Г­Г Г·ГҐГ­ГЁГҐ ГЇГ® ГЄГ«ГѕГ·Гі\n");
+    printf("3 - ГЏГ°Г®ГўГҐГ°ГЁГІГј Г±ГіГ№ГҐГ±ГІГўГ®ГўГ Г­ГЁГҐ ГЄГ«ГѕГ·Г \n");
+    printf("4 - Г“Г¤Г Г«ГЁГІГј ГЄГ«ГѕГ· ГЁ Г§Г­Г Г·ГҐГ­ГЁГҐ\n");
 }
