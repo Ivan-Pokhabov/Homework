@@ -4,7 +4,7 @@
 
 #include "Dictionary.h"
 
-#define VALUE_SIZE 1000
+#define VALUE_SIZE 100
 
 typedef struct Node
 {
