@@ -1,4 +1,4 @@
-#pragma once
+c#pragma once
 #include<stdbool.h>
 
 // Binary search tree (key < 1000 symbols)
@@ -17,7 +17,7 @@ char* getValue(const BinaryTree* const tree, int key);
 bool contains(const BinaryTree* const tree, const int key);
 
 // Deleting value by key
-void deleteValue(const BinaryTree* const tree, int key);
+void deleteValue(const BinaryTree* const tree, const int key);
 
 // Deleting tree
 void deleteBinaryTree(const BinaryTree** const tree);
