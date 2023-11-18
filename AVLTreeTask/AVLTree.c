@@ -24,7 +24,7 @@ struct AVLTree
 
 static size_t getHeight(const Node* const node)
 {
-    return (node == NULL) ? 0 : node->height;
+    return (node == NULL) ? -1 : node->height;
 }
 
 static int getBalanceFactor(Node* node)
@@ -120,7 +120,6 @@ static void insert(Node* const node, const char* const key, const char* const va
         {
             Node* newNode = calloc(1, sizeof(Node));
             newNode->parent = node;
-            ++(newNode->height);
             strcpy_s(newNode->key, VALUE_SIZE, key);
             strcpy_s(newNode->value, VALUE_SIZE, value);
             node->leftChild = newNode;
@@ -129,13 +128,12 @@ static void insert(Node* const node, const char* const key, const char* const va
         insert(node->leftChild, key, value);
         node->leftChild = balance(node->leftChild);
     }
-    if (strcmp(key, node->key) == 1)
+    if (strcmp(key, node->key) > 0)
     {
         if (node->rightChild == NULL)
         {
             Node* newNode = calloc(1, sizeof(Node));
             newNode->parent = node;
-            ++(newNode->height);
             strcpy_s(newNode->key, VALUE_SIZE, key);
             strcpy_s(newNode->value, VALUE_SIZE, value);
             node->rightChild = newNode;
@@ -155,7 +153,6 @@ void addValue(AVLTree* const tree, const char* const key, const char* const valu
     if (isEmpty(tree))
     {
         Node* newNode = calloc(1, sizeof(Node));
-        ++(newNode->height);
         strcpy_s(newNode->key, VALUE_SIZE, key);
         strcpy_s(newNode->value, VALUE_SIZE, value);
         tree->root = newNode;
@@ -193,7 +190,7 @@ static bool find(const Node* const node, const char* const key)
     {
         return true;
     }
-    (strcmp(key, node->key) == -1) ? find(node->leftChild, key) : find(node->rightChild, key);
+    (strcmp(key, node->key) < 0) ? find(node->leftChild, key) : find(node->rightChild, key);
 }
 
 bool contains(const AVLTree* const tree, const char* const key)
@@ -232,6 +229,7 @@ static void deleteNode(Node* node, const char* const key)
     {
         return;
     }
+    
     if (strcmp(key, node->key) == 0)
     {
         if (node->rightChild != NULL && node->leftChild != NULL)
@@ -247,7 +245,7 @@ static void deleteNode(Node* node, const char* const key)
             {
                 node->leftChild->parent = node->parent;
             }
-            if (key < node->parent->key)
+            if (strcmp(key, node->parent->key) < 0)
             {
                 node->parent->leftChild = node->leftChild;
             }
@@ -262,7 +260,7 @@ static void deleteNode(Node* node, const char* const key)
             {
                 node->rightChild->parent = node->parent;
             }
-            if (key < node->parent->key)
+            if (strcmp(key, node->parent->key) < 0)
             {
                 node->parent->leftChild = node->rightChild;
             }
@@ -277,12 +275,12 @@ static void deleteNode(Node* node, const char* const key)
     (strcmp(key, node->key) < 0) ? deleteNode(node->leftChild, key) : deleteNode(node->rightChild, key);
     if (node->parent != NULL)
     {
-        if (strcmp(key, node->key) < 0)
+        if (strcmp(node->key, node->parent->key) < 0)
         {
-            node->parent->leftChild = balance(node->parent->leftChild);
+            node->parent->leftChild = balance(node);
             return;
         }
-        node->parent->rightChild = balance(node->parent->leftChild);
+        node->parent->rightChild = balance(node);
     }
 }
 
@@ -293,6 +291,7 @@ static void deleteRoot(AVLTree* const tree)
         Node* helpNode = findNodeClosestToNode(tree->root);
         copyData(tree->root, helpNode);
         deleteNode(helpNode, helpNode->key);
+        tree->root = balance(tree->root);
         return;
     }
     Node* newRoot = NULL;
@@ -312,7 +311,7 @@ static void deleteRoot(AVLTree* const tree)
     tree->root = balance(newRoot);
 }
 
-void deleteValue(const AVLTree* const tree, const char* const key)
+void deleteValue(AVLTree* const tree, const char* const key)
 {
     if (tree == NULL)
     {
@@ -322,12 +321,13 @@ void deleteValue(const AVLTree* const tree, const char* const key)
     {
         return;
     }
-    if (tree->root->key == key)
+    if (strcmp(tree->root->key, key) == 0)
     {
         deleteRoot(tree);
         return;
     }
     deleteNode(tree->root, key);
+    tree->root = balance(tree->root);
 }
 
 static void deleteChildren(const Node* const node)

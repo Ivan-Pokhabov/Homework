@@ -4,11 +4,16 @@
 #include <stdbool.h>
 
 #include "AVLTree.h"
+#include "Test.h"
 
 #define VALUE_SIZE 100
 
 int main()
 {
+    if (!test())
+    {
+        return -1;
+    }
     setlocale(LC_ALL, "Russian");
     int command = 0;
     bool endOfProgram = false;
