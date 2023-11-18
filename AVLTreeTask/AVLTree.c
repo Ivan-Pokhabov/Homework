@@ -58,7 +58,6 @@ static Node* rotateRight(Node* const root)
     {
         pivot->rightChild->parent = root;
     }
-
     pivot->rightChild = root;
     root->parent = pivot;
     updateHeight(root);
@@ -75,7 +74,6 @@ static Node* rotateLeft(Node* const root)
     {
         pivot->leftChild->parent = root;
     }
-
     pivot->leftChild = root;
     root->parent = pivot;
     updateHeight(root);
