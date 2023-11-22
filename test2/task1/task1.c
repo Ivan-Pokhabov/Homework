@@ -111,7 +111,7 @@ bool testFunction(void)
     List* list = createList();
     ListErrorCode errorCode = ok;
     int checkArray[3] = { 2, 4, 6 };
-    for (int i = 2; i < 6; ++i)
+    for (int i = 2; i < 7; ++i)
     {
         add(list, i);
     }
