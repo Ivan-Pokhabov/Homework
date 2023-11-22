@@ -5,8 +5,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define KEY_SIZE 100
-
 typedef struct ListElement
 {
 	int value;
