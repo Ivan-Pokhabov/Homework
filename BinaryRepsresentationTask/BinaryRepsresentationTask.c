@@ -2,7 +2,7 @@
 #include <locale.h>
 #include <stdbool.h>
 
-#define binaryNumberSize 8 * sizeof(int)
+#define BINARY_NUMBER_SIZE (8 * sizeof(int))
 
 void printBinaryNumber(int array[], const int arrayLength)
 {
@@ -18,10 +18,10 @@ void printBinaryNumber(int array[], const int arrayLength)
     printf("\n");
 }
 
-void addition(int number1[binaryNumberSize], int number2[binaryNumberSize], int sum[binaryNumberSize])
+void addition(int number1[BINARY_NUMBER_SIZE], int number2[BINARY_NUMBER_SIZE], int sum[BINARY_NUMBER_SIZE])
 {
     int oneTransfer = 0;
-    for (int i = binaryNumberSize - 1; i > -1; --i)
+    for (int i = BINARY_NUMBER_SIZE - 1; i > -1; --i)
     {
         sum[i] = oneTransfer + number1[i] + number2[i];
         oneTransfer = 0;
@@ -33,11 +33,12 @@ void addition(int number1[binaryNumberSize], int number2[binaryNumberSize], int 
     }
 }
 
-void numberBinaryReference(int number, int binaryNumber[binaryNumberSize])
+void convertToBinaryReference(int number, int binaryNumber[BINARY_NUMBER_SIZE])
 {
     int bit = 0b1;
-    for (int i = binaryNumberSize - 1; i > -1; --i)
+    for (int i = BINARY_NUMBER_SIZE - 1; i > -1; --i)
     {
+        binaryNumber[i] = 0;
         if (number & bit)
         {
             binaryNumber[i] = 1;
@@ -46,48 +47,34 @@ void numberBinaryReference(int number, int binaryNumber[binaryNumberSize])
     }
 }
 
-void numberDecimalReference(int *number, int binaryNumber[binaryNumberSize])
+void convertToDecimalReference(int *number, int binaryNumber[BINARY_NUMBER_SIZE])
 {
-    if (binaryNumber[0] == 1)
-    {
-        int one[binaryNumberSize] = { 0 };
-        one[binaryNumberSize - 1] = 1;
-        for (int i = binaryNumberSize - 1; i > 0; --i)
-        {
-            binaryNumber[i] ^= 1;
-        }
-        addition(one, binaryNumber, binaryNumber);
-    }
-    for (int i = binaryNumberSize - 1; i > 0; --i)
+    for (int i = BINARY_NUMBER_SIZE - 1; i > -1; --i)
     {
         if (binaryNumber[i] == 1)
         {
-            *number += 1 << (binaryNumberSize - 1 - i);
+            *number += 1 << (BINARY_NUMBER_SIZE - 1 - i);
         }
-    }
-    if (binaryNumber[0] == 1)
-    {
-        *number *= -1;
     }
 }
 
 void binaryRepresentationTaskSolve(const int number1, const int number2)
 {
-    int binaryNumber1[binaryNumberSize] = { 0 };
-    int binaryNumber2[binaryNumberSize] = { 0 };
-    numberBinaryReference(number1, binaryNumber1);
-    numberBinaryReference(number2, binaryNumber2);
+    int binaryNumber1[BINARY_NUMBER_SIZE] = { 0 };
+    int binaryNumber2[BINARY_NUMBER_SIZE] = { 0 };
+    convertToBinaryReference(number1, binaryNumber1);
+    convertToBinaryReference(number2, binaryNumber2);
     printf("Представление числа %d в дополнительном коде : ", number1);
-    printBinaryNumber(binaryNumber1, binaryNumberSize);
+    printBinaryNumber(binaryNumber1, BINARY_NUMBER_SIZE);
     printf("Представление числа %d в дополнительном коде : ", number2);
-    printBinaryNumber(binaryNumber2, binaryNumberSize);
-    int binarySum[binaryNumberSize] = { 0 };
+    printBinaryNumber(binaryNumber2, BINARY_NUMBER_SIZE);
+    int binarySum[BINARY_NUMBER_SIZE] = { 0 };
     addition(binaryNumber1, binaryNumber2, binarySum);
     printf("Представление суммы чисел в дополнительном коде : ");
-    printBinaryNumber(binarySum, binaryNumberSize);
+    printBinaryNumber(binarySum, BINARY_NUMBER_SIZE);
     int sum = 0;
     printf("Представление суммы чисел в 10-тичной записи : ");
-    numberDecimalReference(&sum, binarySum);
+    convertToDecimalReference(&sum, binarySum);
     printf("%d", sum);
 }
 
@@ -97,6 +84,7 @@ bool checkArraysEqual(int array1[], int array2[], int size)
     {
         if (array1[i] != array2[i])
         {
+            printf("%d - %d __ %d", array1[i], array2[i], i);
             return false;
         }
     }
@@ -106,47 +94,47 @@ bool checkArraysEqual(int array1[], int array2[], int size)
 bool numberBinaryReferenceTest(void)
 {
     int number = 0;
-    int binaryNumber[binaryNumberSize] = { 0 };
-    int check[binaryNumberSize] = { 0 };
-    numberBinaryReference(number, binaryNumber);
-    if (!checkArraysEqual(binaryNumber, check, binaryNumberSize))
+    int binaryNumber[BINARY_NUMBER_SIZE] = { 0 };
+    int check[BINARY_NUMBER_SIZE] = { 0 };
+    convertToBinaryReference(number, binaryNumber);
+    if (!checkArraysEqual(binaryNumber, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция перевода в 2сс не работает с числом %d", number);
         return false;
     }
     number = -1;
-    for (int i = 0; i < binaryNumberSize; ++i)
+    for (int i = 0; i < BINARY_NUMBER_SIZE; ++i)
     {
         check[i] = 1;
     }
-    numberBinaryReference(number, binaryNumber);
-    if (!checkArraysEqual(binaryNumber, check, binaryNumberSize))
+    convertToBinaryReference(number, binaryNumber);
+    if (!checkArraysEqual(binaryNumber, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция перевода в 2сс не работает с числом %d", number);
         return false;
     }
-    for (int i = 0; i < binaryNumberSize; ++i)
+    for (int i = 0; i < BINARY_NUMBER_SIZE; ++i)
     {
         binaryNumber[i] = 0;
     }
-    number = ((1 << (binaryNumberSize - 1)) - 1);
+    number = ((1 << (BINARY_NUMBER_SIZE - 1)) - 1);
     check[0] = 0;
-    numberBinaryReference(number, binaryNumber);
-    if (!checkArraysEqual(binaryNumber, check, binaryNumberSize))
+    convertToBinaryReference(number, binaryNumber);
+    if (!checkArraysEqual(binaryNumber, check, BINARY_NUMBER_SIZE))
     {
-        printBinaryNumber(binaryNumber, binaryNumberSize);
-        printBinaryNumber(check, binaryNumberSize);
+        printBinaryNumber(binaryNumber, BINARY_NUMBER_SIZE);
+        printBinaryNumber(check, BINARY_NUMBER_SIZE);
         printf("\nФункция перевода в 2сс не работает с числом %d", number);
         return false;
     }
-    number = -((1 << (binaryNumberSize - 1)) - 1);
+    number = -((1 << (BINARY_NUMBER_SIZE - 1)) - 1);
     check[0] = 1;
-    for (int i = 1; i > binaryNumberSize - 1; ++i)
+    for (int i = 1; i < BINARY_NUMBER_SIZE - 1; ++i)
     {
         check[i] = 0;
     }
-    numberBinaryReference(number, binaryNumber);
-    if (!checkArraysEqual(binaryNumber, check, binaryNumberSize))
+    convertToBinaryReference(number, binaryNumber);
+    if (!checkArraysEqual(binaryNumber, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция перевода в 2сс не работает с числом %d", number);
         return false;
@@ -156,13 +144,13 @@ bool numberBinaryReferenceTest(void)
 
 bool numberDecimalReferenceTest(void)
 {
-    int binaryNumber1[binaryNumberSize] = { 0 };
-    int binaryNumber2[binaryNumberSize] = { 0 };
-    int binaryNumber3[binaryNumberSize] = { 0 };
-    int binaryNumber4[binaryNumberSize] = { 0 };
+    int binaryNumber1[BINARY_NUMBER_SIZE] = { 0 };
+    int binaryNumber2[BINARY_NUMBER_SIZE] = { 0 };
+    int binaryNumber3[BINARY_NUMBER_SIZE] = { 0 };
+    int binaryNumber4[BINARY_NUMBER_SIZE] = { 0 };
     binaryNumber2[0] = 1;
-    binaryNumber2[binaryNumberSize - 1] = 1;
-    for (int i = 0; i < binaryNumberSize; ++i)
+    binaryNumber2[BINARY_NUMBER_SIZE - 1] = 1;
+    for (int i = 0; i < BINARY_NUMBER_SIZE; ++i)
     {
         binaryNumber3[i] = 1;
         if (i != 0)
@@ -171,29 +159,29 @@ bool numberDecimalReferenceTest(void)
         }
     }
     int checkNumber = 0;
-    numberDecimalReference(&checkNumber, binaryNumber1);
+    convertToDecimalReference(&checkNumber, binaryNumber1);
     if (checkNumber != 0)
     {
         printf("Перевод в 10 сс не работает с бинарным представлением числа: %d", checkNumber);
         return false;
     }
     checkNumber = 0;
-    numberDecimalReference(&checkNumber, binaryNumber2);
-    if (checkNumber != -((1 << (binaryNumberSize - 1)) - 1))
+    convertToDecimalReference(&checkNumber, binaryNumber2);
+    if (checkNumber != -((1 << (BINARY_NUMBER_SIZE - 1)) - 1))
     {
         printf("Перевод в 10 сс не работает с бинарным представлением числа: %d", checkNumber);
         return false;
     }
     checkNumber = 0;
-    numberDecimalReference(&checkNumber, binaryNumber3);
+    convertToDecimalReference(&checkNumber, binaryNumber3);
     if (checkNumber != -1)
     {
         printf("Перевод в 10 сс не работает с бинарным представлением числа: %d", checkNumber);
         return false;
     }
     checkNumber = 0;
-    numberDecimalReference(&checkNumber, binaryNumber4);
-    if (checkNumber != ((1 << (binaryNumberSize - 1)) - 1))
+    convertToDecimalReference(&checkNumber, binaryNumber4);
+    if (checkNumber != ((1 << (BINARY_NUMBER_SIZE - 1)) - 1))
     {
         printf("Перевод в 10 сс не работает с бинарным представлением числа: %d", checkNumber);
         return false;
@@ -203,76 +191,76 @@ bool numberDecimalReferenceTest(void)
 
 bool additionTest(void)
 {
-    int binaryNumber1[binaryNumberSize] = { 0 };
-    int binaryNumber2[binaryNumberSize] = { 0 };
-    int binarySum[binaryNumberSize] = { 0 };
-    int check[binaryNumberSize] = { 0 };
+    int binaryNumber1[BINARY_NUMBER_SIZE] = { 0 };
+    int binaryNumber2[BINARY_NUMBER_SIZE] = { 0 };
+    int binarySum[BINARY_NUMBER_SIZE] = { 0 };
+    int check[BINARY_NUMBER_SIZE] = { 0 };
     addition(binaryNumber1, binaryNumber2, binarySum);
-    if (!checkArraysEqual(binarySum, check, binaryNumberSize))
+    if (!checkArraysEqual(binarySum, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция прибавления не работает для бинарных чисел: \n");
-        printBinaryNumber(binaryNumber1, binaryNumberSize);
-        printBinaryNumber(binaryNumber2, binaryNumberSize);
+        printBinaryNumber(binaryNumber1, BINARY_NUMBER_SIZE);
+        printBinaryNumber(binaryNumber2, BINARY_NUMBER_SIZE);
         return false;
     }
-    for (int i = 0; i < binaryNumberSize; ++i)
+    for (int i = 0; i < BINARY_NUMBER_SIZE; ++i)
     {
         binaryNumber1[i] = 1;
     }
-    binaryNumber2[binaryNumberSize - 1] = 1;
+    binaryNumber2[BINARY_NUMBER_SIZE - 1] = 1;
     addition(binaryNumber1, binaryNumber2, binarySum);
-    if (!checkArraysEqual(binarySum, check, binaryNumberSize))
+    if (!checkArraysEqual(binarySum, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция прибавления не работает для бинарных чисел: \n");
-        printBinaryNumber(binaryNumber1, binaryNumberSize);
-        printBinaryNumber(binaryNumber2, binaryNumberSize);
+        printBinaryNumber(binaryNumber1, BINARY_NUMBER_SIZE);
+        printBinaryNumber(binaryNumber2, BINARY_NUMBER_SIZE);
         return false;
     }
-    binaryNumber2[binaryNumberSize - 3] = 1;
-    check[binaryNumberSize - 3] = 1;
+    binaryNumber2[BINARY_NUMBER_SIZE - 3] = 1;
+    check[BINARY_NUMBER_SIZE - 3] = 1;
     addition(binaryNumber1, binaryNumber2, binarySum);
-    if (!checkArraysEqual(binarySum, check, binaryNumberSize))
+    if (!checkArraysEqual(binarySum, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция прибавления не работает для бинарных чисел: \n");
-        printBinaryNumber(binaryNumber1, binaryNumberSize);
-        printBinaryNumber(binaryNumber2, binaryNumberSize);
+        printBinaryNumber(binaryNumber1, BINARY_NUMBER_SIZE);
+        printBinaryNumber(binaryNumber2, BINARY_NUMBER_SIZE);
         return false;
     }
-    for (int i = 0; i < binaryNumberSize; ++i)
+    for (int i = 0; i < BINARY_NUMBER_SIZE; ++i)
     {
         binaryNumber1[i] = 1;
         binaryNumber2[i] = 1;
         binarySum[i] = 0;
         check[i] ^= 1;
     }
-    check[binaryNumberSize - 1] = 0;
-    binaryNumber2[binaryNumberSize - 3] = 0;
+    check[BINARY_NUMBER_SIZE - 1] = 0;
+    binaryNumber2[BINARY_NUMBER_SIZE - 3] = 0;
     addition(binaryNumber1, binaryNumber2, binarySum);
-    if (!checkArraysEqual(binarySum, check, binaryNumberSize))
+    if (!checkArraysEqual(binarySum, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция прибавления не работает для бинарных чисел: \n");
-        printBinaryNumber(binaryNumber1, binaryNumberSize);
-        printBinaryNumber(binaryNumber2, binaryNumberSize);
+        printBinaryNumber(binaryNumber1, BINARY_NUMBER_SIZE);
+        printBinaryNumber(binaryNumber2, BINARY_NUMBER_SIZE);
         return false;
     }
-    for (int i = 0; i < binaryNumberSize; ++i)
+    for (int i = 0; i < BINARY_NUMBER_SIZE; ++i)
     {
         binarySum[i] = 0;
         check[i] = 0;
         binaryNumber1[i] = 0;
         binaryNumber2[i] = 0;
     }
-    binaryNumber2[binaryNumberSize - 3] = 1;
-    binaryNumber1[binaryNumberSize - 3] = 1;
-    binaryNumber1[binaryNumberSize - 1] = 1;
-    check[binaryNumberSize - 4] = 1;
-    check[binaryNumberSize - 1] = 1;
+    binaryNumber2[BINARY_NUMBER_SIZE - 3] = 1;
+    binaryNumber1[BINARY_NUMBER_SIZE - 3] = 1;
+    binaryNumber1[BINARY_NUMBER_SIZE - 1] = 1;
+    check[BINARY_NUMBER_SIZE - 4] = 1;
+    check[BINARY_NUMBER_SIZE - 1] = 1;
     addition(binaryNumber1, binaryNumber2, binarySum);
-    if (!checkArraysEqual(binarySum, check, binaryNumberSize))
+    if (!checkArraysEqual(binarySum, check, BINARY_NUMBER_SIZE))
     {
         printf("Функция прибавления не работает для бинарных чисел: \n");
-        printBinaryNumber(binaryNumber1, binaryNumberSize);
-        printBinaryNumber(binaryNumber2, binaryNumberSize);
+        printBinaryNumber(binaryNumber1, BINARY_NUMBER_SIZE);
+        printBinaryNumber(binaryNumber2, BINARY_NUMBER_SIZE);
         return false;
     }
     return true;
@@ -280,11 +268,7 @@ bool additionTest(void)
 
 bool test(void)
 {
-    if (!numberBinaryReferenceTest() || !numberDecimalReferenceTest() || !additionTest())
-    {
-        return false;
-    }
-    return true;
+    return numberBinaryReferenceTest() && numberDecimalReferenceTest() && additionTest();
 }
 
 int main()
@@ -292,11 +276,11 @@ int main()
     setlocale(LC_ALL, "Russian");
     if (!test())
     {
-        return 0;
+        return -1;
     }
     int number1 = 0;
     int number2 = 0;
-    printf("Введите 2 числа, сумма которых по модулю не превышает %d : ", (1 << (binaryNumberSize - 1)) - 1);
+    printf("Введите 2 числа, сумма которых по модулю не превышает %d : ", (1 << (BINARY_NUMBER_SIZE - 1)) - 1);
     if (scanf_s("%d %d", &number1, &number2) != 2)
     {
         printf("Вы ввели некорректные входные данные.");
