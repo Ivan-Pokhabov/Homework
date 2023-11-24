@@ -41,7 +41,7 @@ void arrayReader(const char *fileName, int *arraySize, int array[])
     errno_t err;
     FILE* file;
     err = fopen_s(&file, fileName, "r");
-    if (file == 0)
+    if (file == NULL)
     {
         printf("file not found!");
         return;
