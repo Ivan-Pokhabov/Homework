@@ -67,7 +67,7 @@ void getFileData(const char fileName[], Phonebook phonebook[], int *currentPosit
     while (!feof(file))
     {
         char buffer[100];
-        const int readbytes = fscanf_s(file, "%s", buffer, _countof(buffer));
+        const int readBytes = fscanf_s(file, "%s", buffer, _countof(buffer));
         if (readbytes < 0)
         {
             break;
