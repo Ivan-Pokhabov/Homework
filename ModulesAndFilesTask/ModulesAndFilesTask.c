@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 
-#define ARRAYLENGTH 10000
+#define ARRAY_LENGTH 10000
 
 void printArray(int array[], const int arrayLength)
 {
