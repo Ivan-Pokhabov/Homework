@@ -11,7 +11,7 @@ typedef enum CycleListErrorCode
 
 } CycleListErrorCode;
 
-//Struct of cycle list
+// Struct of cycle list
 typedef struct CycleList CycleList;
 
 //Function that return pointer on cycle list
