@@ -1,16 +1,34 @@
 ﻿#include "CycleList.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <locale.h>
 
-bool test(void)
+CycleListErrorCode deletingByStepExceptLast(CycleList** cycleList, const size_t step)
 {
-    bool testCases[3] = { true, true, true };
+    CycleListErrorCode errorCode = ok;
+    CycleListElement* current = getListElement(*cycleList, 0, &errorCode);
+    if (errorCode != ok)
+    {
+        return errorCode;
+    }
+    while (current != next(current, &errorCode))
+    {
+        if (delete(cycleList, &current, step) != ok || errorCode != ok)
+        {
+            return errorCode;
+        }
+    }
+    return ok;
+}
+
+bool test1(void)
+{
     CycleListErrorCode errorCode = ok;
     CycleList* cycleList = createCycleList();
     for (int i = 0; i < 5; ++i)
     {
-        CycleListErrorCode addingError = add(&cycleList, i + 1, i + 1);
+        CycleListErrorCode addingError = add(cycleList, i + 1, i + 1);
         if (addingError != ok)
         {
             if (addingError == memoryError)
@@ -25,25 +43,33 @@ bool test(void)
             return false;
         }
     }
-    delete(&cycleList, 3);
-    delete(&cycleList, 15);
+    CycleListElement* element = getListElement(cycleList, 1, &errorCode);
+    delete(&cycleList, &element, 3);
+    element = getListElement(cycleList, 15, &errorCode);
+    delete(&cycleList, &element, 1);
     int checkArray[3] = { 1, 2, 5 };
+    bool passed = true;
     for (int i = 0; i < 3; ++i)
     {
         const int checkValue = get(cycleList, i + 1, &errorCode);
         if (errorCode != ok || checkValue != checkArray[i])
         {
             printf("%d %d", checkValue, checkArray[i]);
-            testCases[0] = false;
+            passed = false;
             break;
         }
     }
-    errorCode = ok;
     deleteCycleList(&cycleList);
-    cycleList = createCycleList();
+    return passed;
+}
+
+bool test2(void)
+{
+    CycleListErrorCode errorCode = ok;
+    CycleList* cycleList = createCycleList();
     for (int i = 0; i < 5; ++i)
     {
-        CycleListErrorCode addingError = add(&cycleList, i + 1, i + 1);
+        CycleListErrorCode addingError = add(cycleList, i + 1, i + 1);
         if (addingError != ok)
         {
             if (addingError == memoryError)
@@ -58,40 +84,55 @@ bool test(void)
             return false;
         }
     }
+    CycleListElement* element = getListElement(cycleList, 1, &errorCode);
     if (deletingByStepExceptLast(&cycleList, 3) != ok)
     {
         printf("Передача нулевого указателя.");
+        deleteCycleList(&cycleList);
         return false;
     }
     const int lastWarrior = get(cycleList, 1, &errorCode);
+    bool passed = true;
     if (errorCode != ok || lastWarrior != 4)
     {
-        testCases[1] = false;
+        passed = false;
+        printf("%d", lastWarrior);
     }
-    errorCode = ok;
     deleteCycleList(&cycleList);
-    cycleList = createCycleList();
-    add(&cycleList, 1, 2);
-    add(&cycleList, 3, 1);
-    delete(&cycleList, 1);
+    return passed;
+}
+
+bool test3()
+{
+    CycleListErrorCode errorCode = ok;
+    CycleList* cycleList = createCycleList();
+    add(cycleList, 1, 2);
+    add(cycleList, 3, 1);
+    CycleListElement* element = getListElement(cycleList, 1, &errorCode);
+    delete(&cycleList, &element, 1);
     CycleListErrorCode errorCode1 = ok;
-    int elementsCount = elementsNumber(cycleList, &errorCode);
     int number = get(cycleList, 1, &errorCode1);
-    if (errorCode != ok || errorCode1 != ok || elementsCount != 1 || number != 1)
+    deleteCycleList(&cycleList);
+    if (errorCode != ok || errorCode1 != ok || number != 1)
     {
-        testCases[2] = false;
+        return false;
     }
-    bool compliteTests = true;
+    return true;
+}
+
+bool test(void)
+{
+    bool testCases[3] = { test1(), test2(), test3()};
+    bool completeTests = true;
     for (int i = 0; i < 3; ++i)
     {
         if (!testCases[i])
         {
             printf("Программа не работает с тестовым случаем %d\n", i + 1);
-            compliteTests = false;
+            completeTests = false;
         }
     }
-    deleteCycleList(&cycleList);
-    return compliteTests;
+    return completeTests;
 }
 
 int main()
@@ -113,7 +154,7 @@ int main()
     }
     for (int i = 0; i < warriorsNumber; ++i)
     {
-        CycleListErrorCode addingError = add(&cycleList, i + 1, i + 1);
+        CycleListErrorCode addingError = add(cycleList, i + 1, i + 1);
         if (addingError != ok)
         {
             if (addingError == memoryError)
