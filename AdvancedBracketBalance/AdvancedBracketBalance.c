@@ -20,6 +20,8 @@ bool bracketCompare(char leftBracket, char rightBracket)
             return rightBracket == ')';
         case '[':
             return rightBracket == ']';
+        default:
+            return false;
     }
 }
 
@@ -102,16 +104,16 @@ bool test(void)
     {
         errors[3] = false;
     }
-    bool compliteTests = true;
+    bool completeTests = true;
     for (int i = 0; i < 4; ++i)
     {
         if (!errors[i])
         {
             printf("Program is not working with test case %d\n", i + 1);
-            compliteTests = false;
+            completeTests = false;
         }
     }
-    return compliteTests;
+    return completeTests;
 }
 
 int main()
@@ -120,7 +122,7 @@ int main()
     CharStackErrorCode stackErrorCode = charOk;
     if (!test())
     {
-        return 0;
+        return -1;
     }
     printf("Enter your bracket subsequence: ");
     if (isBalanced(stdin, &errorCode, &stackErrorCode))
