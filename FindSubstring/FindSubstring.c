@@ -98,7 +98,13 @@ int main()
     }
     size_t textSize = 100;
     char* const text = calloc(textSize, sizeof(char));
+    if (text == NULL)
+    {
+        fclose(file);
+        return nullptr;
+    }
     int errorCode = readTextFromFile(file, text, &textSize);
+    fclose(file);
     if (errorCode != 0)
     {
         free(text);
