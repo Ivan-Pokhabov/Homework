@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "BinaryHeap.h"
 
@@ -159,4 +160,9 @@ void deleteHeap(BinaryHeap** heap)
     }
     free(*heap);
     *heap = NULL;
+}
+
+bool isEmpty(BinaryHeap* heap)
+{
+    return heap->elementsNumber == 0;
 }
