@@ -3,6 +3,8 @@
 
 #include "../BinaryHeap/BinaryHeap.h"
 
+#define VERTEX_NUMBER 100
+
 void dijkstra(int start, const int graph[5][5], const size_t edgesLength[5][5], const size_t* const neighboursNumber, int* const distances, int* const from)
 {
     distances[start] = 0;
@@ -16,8 +18,8 @@ void dijkstra(int start, const int graph[5][5], const size_t edgesLength[5][5], 
         pop(heap, &distance, &vertex);
         for (size_t i = 0; i < neighboursNumber[vertex]; ++i)
         {
-            int neighbour = graph[vertex][i];
-            size_t edge = edgesLength[vertex][i];
+            const int neighbour = graph[vertex][i];
+            const size_t edge = edgesLength[vertex][i];
             if (distance + edge < distances[neighbour] || distances[neighbour] == -1)
             {
                 distances[neighbour] = distance + edge;
@@ -30,7 +32,7 @@ void dijkstra(int start, const int graph[5][5], const size_t edgesLength[5][5], 
 
 int main()
 {
-    int graph[5][5] = {{1, 3}, {0, 4, 2}, {1, 3, 4}, {0, 2}, {1, 2}};
+    int graph[5][5] = { {1, 3}, {0, 4, 2}, {1, 3, 4}, {0, 2}, {1, 2} };
     size_t roads[5][5] = { {2, 1}, {2, 5, 4}, {4, 3, 1}, {1, 3}, {5, 1} };
     int distances[5] = { -1, -1, -1, -1, -1 };
     size_t neighbours[5] = { 2, 3, 3, 2, 2 };
