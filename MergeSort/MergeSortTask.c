@@ -7,14 +7,27 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void phonebookSort(const char* const fileName)
+#define INCORRECT_INPUT -10
+
+void instructions(void)
+{
+    printf("0 - выйти\n");
+    printf("1 - отсортировать записи\n");
+    printf("2 - распечатать все имеющиеся записи\n");
+}
+
+int phonebookSort(const char* const fileName)
 {
     Phonebook* phonebook = createPhonebook();
+    if (phonebook == NULL)
+    {
+        return nullptr;
+    }
     PhonebookErrorCode errorCode = ok;
     size_t size = 0;
     if (getFileData(fileName, phonebook, &size) != ok)
     {
-        printf("Ошибка чтения из файла");
+        return fileOpenningError;
     }
     instructions();
     int command = -1;
@@ -22,12 +35,13 @@ void phonebookSort(const char* const fileName)
     {
         if (scanf_s("%d", &command) != 1 || command > 3 || command < 0)
         {
-            printf("Вы ввели некорректное значение.");
-            break;
+            deletePhonebook(&phonebook);
+            return INCORRECT_INPUT;
         }
         if (command == 0)
         {
-            return;
+            deletePhonebook(&phonebook);
+            return ok;
         }
         else if (command == 1)
         {
@@ -35,8 +49,8 @@ void phonebookSort(const char* const fileName)
             int parameter = 0;
             if (scanf_s("%d", &parameter) != 1 || parameter != 1 && parameter != 2)
             {
-                printf("Вы ввели некорректное значение.");
-                break;
+                deletePhonebook(&phonebook);
+                return INCORRECT_INPUT;
             }
             mergeSort(phonebook, 0, size, parameter, &errorCode);
             if (errorCode != ok)

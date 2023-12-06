@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-struct PhonebookNote
+typedef struct PhonebookNote
 {
     char name[100];
     char number[100];
     PhonebookNote* next;
-};
+} PhonebookNote;
 
 struct Phonebook
 {
@@ -48,6 +48,7 @@ PhonebookErrorCode add(Phonebook* const phonebook, const char* const name, const
     {
         if (errorCode != ok)
         {
+            free(newNote);
             return errorCode;
         }
         phonebook->head = newNote;
@@ -64,11 +65,7 @@ PhonebookErrorCode print(const Phonebook* const phonebook)
     PhonebookErrorCode errorCode = ok;
     if (isEmpty(phonebook, &errorCode))
     {
-        if (errorCode != ok)
-        {
-            return errorCode;
-        }
-        return nullptr;
+        return (errorCode == ok) ? nullptr : errorCode;
     }
     PhonebookNote* current = phonebook->head;
     while (current != NULL)
@@ -86,24 +83,25 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
     fopen_s(&file, fileName, "r");
     if (file == NULL)
     {
-        return fileOpenningError;
+        return fileOpeningError;
     }
-    int cologn = 0;
+    int coloumn = 0;
     if (phonebook == NULL)
     {
+        fclose(file);
         return nullptr;
     }
     while (!feof(file))
     {
-        char name[100];
-        char number[100];
-        char buffer[100];
-        const int readbytes = fscanf_s(file, "%s", buffer, _countof(buffer));
+        char name[100] = { 0 };
+        char number[100] = { 0 };
+        char buffer[100] = { 0 };
+        const int readbytes = fscanf_s(file, "%s", buffer, 100);
         if (readbytes < 0)
         {
             break;
         }
-        if (cologn == 0)
+        if (coloumn == 0)
         {
             strcpy_s(name, 100, buffer);
         }
@@ -113,7 +111,7 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
             add(phonebook, name, number);
             ++(*size);
         }
-        cologn ^= 1;
+        coloumn ^= 1;
     }
     fclose(file);
     return ok;
@@ -121,16 +119,8 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
 
 int compare(PhonebookNote* first, PhonebookNote* second, const int parameter)
 {
-    if (parameter == 1)
-    {
-        return strcmp(first->name, second->name);
-    }
-    else
-    {
-        return strcmp(first->number, second->number);
-    }
+    return (parameter == 1) ? strcmp(first->name, second->name) : strcmp(first->number, second->number);
 }
-
 
 PhonebookErrorCode merge(Phonebook* phonebook, const size_t leftBorder, const size_t middle, const size_t rightBorder, const int parameter)
 {
@@ -239,13 +229,6 @@ void deletePhonebook(Phonebook** phonebook)
     }
     free(*phonebook);
     *phonebook = NULL;
-}
-
-void instructions(void)
-{
-    printf("0 - выйти\n");
-    printf("1 - отсортировать записи\n");
-    printf("2 - распечатать все имеющиеся записи\n");
 }
 
 bool checkSort(const Phonebook* const phonebook, const int parameter)

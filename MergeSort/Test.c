@@ -10,6 +10,7 @@ bool test(void)
     bool passed = true;
     for (int i = 0; i < 3; ++i)
     {
+        deletePhonebook(&phonebook);
         Phonebook* phonebook = createPhonebook();
         PhonebookErrorCode errorCode = ok;
         size_t size = 0;
