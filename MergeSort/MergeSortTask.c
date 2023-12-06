@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void phonebookSort(char* fileName)
+void phonebookSort(const char* const fileName)
 {
     Phonebook* phonebook = createPhonebook();
     PhonebookErrorCode errorCode = ok;
