@@ -89,7 +89,7 @@ bool test(void)
         if (tests[i] != true)
         {
             passed = false;
-            printf("Function does not work with test %lld", i);
+            printf("Function does not work with test %lld", i + 1);
         }
     }
     return passed;
