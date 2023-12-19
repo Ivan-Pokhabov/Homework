@@ -118,7 +118,7 @@ int makeAdjacencyList(int*** adjacencyList, const size_t edgesNumber, const size
 int main()
 {
     const int matrix[VERTEX_NUMBER][EDGES_NUMBER] = { {1, 0, 0}, {1, 0, 0}, {0, 0, 0} };
-    int** graph = 0;
+    int** graph = NULL;
     if (makeAdjacencyList(&graph, EDGES_NUMBER, VERTEX_NUMBER, matrix) != 0)
     {
         for (size_t i = 0; i < VERTEX_NUMBER; ++i)
