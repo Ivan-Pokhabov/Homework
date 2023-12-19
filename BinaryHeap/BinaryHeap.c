@@ -81,10 +81,18 @@ int add(BinaryHeap* const heap, const int key, const int value)
     }
     if (heap->elementsNumber == heap->size)
     {
-        heap->keys = realloc(2 * (heap->size + 1), sizeof(int));
-        heap->values = realloc(2 * (heap->size + 1), sizeof(int));
-        if (heap->keys == NULL || heap->values == NULL)
+        int* oldKeys = heap->keys;
+        heap->keys = realloc(heap->keys, 2 * (heap->size + 1), sizeof(int));
+        int* oldValues = heap->values;
+        heap->values = realloc(heap->keys, 2 * (heap->size + 1), sizeof(int));
+        if (heap->keys == NULL)
         {
+            free(oldKeys);
+            return memoryError;
+        }
+        if (heap->values == NULL)
+        {
+            free(oldValues);
             return memoryError;
         }
         heap->size = 2 * heap->size + 1;
