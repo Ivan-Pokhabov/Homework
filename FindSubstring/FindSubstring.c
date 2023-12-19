@@ -23,9 +23,11 @@ int readTextFromFile(const FILE* const file, char* text, size_t* const textSize)
     {
         if (*textSize == writeIndex)
         {
+            char* oldBuffer = text;
             text = realloc(text, (*textSize) * sizeof(char) * 2);
             if (text == NULL)
             {
+                free(oldBuffer);
                 return memoryError;
             }
             *textSize *= 2;
@@ -35,9 +37,11 @@ int readTextFromFile(const FILE* const file, char* text, size_t* const textSize)
         ++writeIndex;
     }
     *textSize = strlen(text);
+    char* oldBuffer = text;
     text = realloc(text, (*textSize + 1) * sizeof(char));
     if (text == NULL)
     {
+        free(oldBuffer);
         return memoryError;
     }
     return 0;
