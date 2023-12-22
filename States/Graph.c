@@ -11,18 +11,23 @@ struct Graph
 
 Graph* createGraph(const size_t vertexNumber)
 {
-    Graph graph;
-    graph.graph = (List**)calloc(vertexNumber, sizeof(List*));
-    if (graph.graph == NULL)
+    Graph* graph = (Graph*)malloc(sizeof(Graph));
+    if (graph == NULL)
     {
+        return NULL;
+    }
+    graph->vertexNumber = vertexNumber;
+    graph->graph = (List**)calloc(vertexNumber, sizeof(List*));
+    if (graph->graph == NULL)
+    {
+        free(graph);
         return NULL;
     }
     for (size_t i = 0; i < vertexNumber; ++i)
     {
-        (graph.graph)[i] = createList();
+        (graph->graph)[i] = createList();
     }
-    graph.vertexNumber = vertexNumber; 
-    return &graph;
+    return graph;
 }
 
 void addEdge(Graph* const graph, const int vertex1, const int vertex2, const int length)
@@ -42,5 +47,5 @@ void deleteGraph(Graph** graph)
         deleteList(&((*graph)->graph)[i]);
     }
     free((*graph)->graph);
-    //free(*graph);
+    free(*graph);
 }

@@ -44,7 +44,7 @@ void dijkstra(const int* const starts, const size_t startsNumber, Graph* graph, 
     deleteHeap(&heap);
 }
 
-int readData(char* fileName, size_t* const vertexNumber, Graph** graph, int** capitals, size_t* capitalsNumber)
+int readData(char* fileName, size_t* const vertexNumber, Graph** graph, int** capitals, size_t* const capitalsNumber)
 {
     if (*capitals != NULL || *graph != NULL)
     {
@@ -84,8 +84,8 @@ int readData(char* fileName, size_t* const vertexNumber, Graph** graph, int** ca
     {
         return -3;
     }
-    *capitals = (int*)calloc(*capitalsNumber, sizeof(int));
-    if (capitals == NULL)
+    *capitals = (int*)calloc(*capitalsNumber, sizeof(int)); 
+    if (*capitals == NULL)
     {
         return -4;
     }
@@ -99,6 +99,7 @@ int readData(char* fileName, size_t* const vertexNumber, Graph** graph, int** ca
         (*capitals)[i] = vertex - 1;
     }
     return 0;
+    fclose(file);
 }
 
 int main()
@@ -119,7 +120,7 @@ int main()
         distances[i] = -1;
         colours[i] = -1;
     }
-    dijkstra(capitals, capitalsNumber, graph,distances, colours);
+    dijkstra(capitals, capitalsNumber, graph, distances, colours);
     for (size_t capital = 0; capital < capitalsNumber; ++capital)
     {
         printf("State %lld: ", capital + 1);
@@ -132,9 +133,9 @@ int main()
         }
         printf("\n");
     }
-    deleteGraph(&graph);
     free(capitals);
     free(distances);
     free(colours);
+    deleteGraph(&graph);
     _CrtDumpMemoryLeaks();
 }
