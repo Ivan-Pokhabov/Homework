@@ -2,17 +2,10 @@
 #include <stdlib.h>
 
 #include "../BinaryHeap/BinaryHeap.h"
+#include "Graph.h"
+#include "List.h"
 
-enum ErrorCode
-{
-    ok = 0,
-    incorrectVariales = -1,
-    fileDidNotOpened = -2,
-    incorrectInputFile = -3,
-    memoryError = -4
-};
-
-void dijkstra(int* starts, const size_t startsNumber, const int* const * const graph, const size_t* const * const edgesLength, const size_t* const neighboursNumber, int* const distances, int* const colours)
+void dijkstra(const int* const starts, const size_t startsNumber, Graph* graph, int* const distances, int* const colours)
 {
     BinaryHeap* heap = createHeap();
     for (size_t i = 0; i < startsNumber; ++i)
@@ -30,57 +23,46 @@ void dijkstra(int* starts, const size_t startsNumber, const int* const * const g
         {
             continue;
         }
-        for (size_t i = 0; i < neighboursNumber[vertex]; ++i)
+        List* neighbours = getNeigbours(graph, vertex);
+        ListElement* neighbour = getFirst(neighbours);
+        while (neighbour != NULL)
         {
-            const int neighbour = graph[vertex][i];
-            const size_t edge = edgesLength[vertex][i];
-            if (distance + edge < distances[neighbour] || distances[neighbour] == -1)
+            int neighbourNumber = 0;
+            int length = 0;
+            getData(neighbour, &neighbourNumber, &length);
+            if (distances[neighbourNumber] > distance + length || distances[neighbourNumber] == -1)
             {
-                distances[neighbour] = distance + edge;
-                colours[neighbour] = colours[vertex];
-                add(heap, distances[neighbour], neighbour);
+                add(heap, distance + length, neighbourNumber);
+                distances[neighbourNumber] = distance + length;
+                colours[neighbourNumber] = colours[vertex];
             }
+            neighbour = nextElement(neighbour);
         }
     }
 }
 
-int readData(char* fileName, size_t* const vertexNumber, int*** graph, size_t*** edges, size_t** neighbours, int** capitals, size_t* capitalsNumber)
+int readData(char* fileName, size_t* const vertexNumber, Graph** graph, int** capitals, size_t* capitalsNumber)
 {
-    if (*graph != NULL || *edges != NULL || *neighbours != NULL || *capitals != NULL)
+    if (*capitals != NULL || *graph != NULL)
     {
-        return incorrectVariales;
+        return -1;
     }
     FILE* file = NULL;
     fopen_s(&file, fileName, "r");
     if (file == NULL)
     {
-        return fileDidNotOpened;
+        return -2;
     }
     if (fscanf_s(file, "%lld", vertexNumber) == 0)
     {
-        return incorrectInputFile;
+        return -3;
     }
     size_t edgesNumber = 0;
     if (fscanf_s(file, "%lld", &edgesNumber) == 0)
     {
-        return incorrectInputFile;
+        return -3;
     }
-    *graph = (int**)calloc(*vertexNumber, sizeof(int*));
-    *edges = (size_t**)calloc(*vertexNumber, sizeof(size_t*));
-    *neighbours = (size_t*)calloc(*vertexNumber, sizeof(size_t));
-    if (*graph == NULL || *edges == NULL || *neighbours == NULL)
-    {
-        return memoryError;
-    }
-    for (size_t i = 0; i < *vertexNumber; ++i)
-    {
-        (*graph)[i] = (int*)calloc(*vertexNumber, sizeof(int));
-        (*edges)[i] = (int*)calloc(*vertexNumber, sizeof(size_t));
-        if ((*graph)[i] == NULL || (*edges)[i] == NULL)
-        {
-            return memoryError;
-        }
-    }
+    *graph = createGraph(*vertexNumber);
     for (size_t i = 0; i < edgesNumber; ++i)
     {
         int vertex1 = 0;
@@ -88,48 +70,42 @@ int readData(char* fileName, size_t* const vertexNumber, int*** graph, size_t***
         size_t edgeLength = 0; 
         if (fscanf_s(file, "%d %d %lld", &vertex1, &vertex2, &edgeLength) != 3)
         {
-            return incorrectInputFile;
+            return -3;
         }
         --vertex1;
         --vertex2;
-        (*graph)[vertex1][(*neighbours)[vertex1]] = vertex2;
-        (*edges)[vertex1][(*neighbours)[vertex1]] = edgeLength;
-        ++(*neighbours)[vertex1];
-        (*graph)[vertex2][(*neighbours)[vertex2]] = vertex1;
-        (*edges)[vertex2][(*neighbours)[vertex2]] = edgeLength;
-        ++(*neighbours)[vertex2];
+        addEdge(*graph, vertex1, vertex2, edgeLength);
+        addEdge(*graph, vertex2, vertex1, edgeLength);
     }
     if (fscanf_s(file, "%lld", capitalsNumber) == 0)
     {
-        return incorrectInputFile;
+        return -3;
     }
     *capitals = (int*)calloc(*capitalsNumber, sizeof(int));
     if (capitals == NULL)
     {
-        return memoryError;
+        return -4;
     }
     for (size_t i = 0; i < *capitalsNumber; ++i)
     {
         int vertex = 0;
         if (fscanf_s(file, "%d", &vertex) == 0)
         {
-            return incorrectInputFile;
+            return -3;
         }
         (*capitals)[i] = vertex - 1;
     }
-    return ok;
+    return 0;
 }
 
 int main()
 {
-    int** graph = NULL;
+    Graph* graph = NULL;
     size_t vertexNumber = 0;
-    size_t** edgesLength = NULL;
-    size_t* neighbours = NULL;
     int* capitals = NULL;
     size_t capitalsNumber = 0;
-    ErrorCode errorCode = readData("input.txt", &vertexNumber, &graph, &edgesLength, &neighbours, &capitals, &capitalsNumber);
-    if (errorCode != ok)
+    ErrorCode errorCode = readData("input.txt", &vertexNumber, &graph, &capitals, &capitalsNumber);
+    if (errorCode != 0)
     {
         return errorCode;
     }
@@ -140,7 +116,7 @@ int main()
         distances[i] = -1;
         colours[i] = -1;
     }
-    dijkstra(capitals, capitalsNumber, graph, edgesLength, neighbours, distances, colours);
+    dijkstra(capitals, capitalsNumber, graph,distances, colours);
     for (size_t capital = 0; capital < capitalsNumber; ++capital)
     {
         printf("State %lld: ", capital + 1);
@@ -148,19 +124,11 @@ int main()
         {
             if (colours[node] == capital)
             {
-                printf("%lld ", node);
+                printf("%lld ", node + 1);
             }
         }
         printf("\n");
     }
-    for (size_t i = 0; i < vertexNumber; ++i)
-    {
-        free(graph[i]);
-        free(edgesLength[i]);
-    }
-    free(graph);
-    free(edgesLength);
-    free(neighbours);
     free(capitals);
     free(distances);
     free(colours);

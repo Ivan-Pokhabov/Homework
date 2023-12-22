@@ -128,10 +128,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\BinaryHeap\BinaryHeap.c" />
+    <ClCompile Include="Graph.c" />
+    <ClCompile Include="List.c" />
     <ClCompile Include="States.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\BinaryHeap\BinaryHeap.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="List.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
