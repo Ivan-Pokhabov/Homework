@@ -13,7 +13,7 @@ Graph* createGraph(const size_t vertexNumber);
 void addEdge(Graph* const graph, const int vertex1, const int vertex2, const int length);
 
 // function of getting vertexes that have node that connects them with this vertex
-List* getNeigbours(const Graph* const graph, const int vertex);
+List* getNeighbours(const Graph* const graph, const int vertex);
 
-// Funvtion of deleting graph and free memory
+// Function of deleting graph and free memory
 void deleteGraph(Graph** graph);

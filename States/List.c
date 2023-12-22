@@ -67,7 +67,7 @@ void deleteList(List** const list)
 	{
 		return;
 	}
-	while (!isEmpty(*list))
+	while ((*list)->head != NULL)
 	{
 		ListElement* trash = (*list)->head;
 		(*list)->head = (*list)->head->next;

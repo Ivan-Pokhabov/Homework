@@ -1,5 +1,7 @@
 ﻿#include <stdio.h>
+#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
+#include <crtdbg.h>
 
 #include "../BinaryHeap/BinaryHeap.h"
 #include "Graph.h"
@@ -23,7 +25,7 @@ void dijkstra(const int* const starts, const size_t startsNumber, Graph* graph, 
         {
             continue;
         }
-        List* neighbours = getNeigbours(graph, vertex);
+        List* neighbours = getNeighbours(graph, vertex);
         ListElement* neighbour = getFirst(neighbours);
         while (neighbour != NULL)
         {
@@ -39,6 +41,7 @@ void dijkstra(const int* const starts, const size_t startsNumber, Graph* graph, 
             neighbour = nextElement(neighbour);
         }
     }
+    deleteHeap(&heap);
 }
 
 int readData(char* fileName, size_t* const vertexNumber, Graph** graph, int** capitals, size_t* capitalsNumber)
@@ -129,7 +132,9 @@ int main()
         }
         printf("\n");
     }
+    deleteGraph(&graph);
     free(capitals);
     free(distances);
     free(colours);
+    _CrtDumpMemoryLeaks();
 }
