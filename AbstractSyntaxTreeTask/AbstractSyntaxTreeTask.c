@@ -16,12 +16,11 @@ int main()
 		printf("File not found");
 		return 1;
 	}
-	char expression[1000];
-	fgets(expression, 1000, file);
+	SyntaxTree* tree = NULL;
+	build(&tree, file);
 	fclose(file);
-	SyntaxTree* tree = build(expression);
 	printf("Prefix expression: ");
 	printSyntaxTree(tree);
-	printf("\nResult: %d", calculate(tree));
+	printf("\nResult: %d", calculateSyntaxTree(tree));
 	deleteSyntaxTree(&tree);
 }

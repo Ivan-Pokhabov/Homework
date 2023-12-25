@@ -3,14 +3,14 @@
 // Abstract syntax tree struct
 typedef struct SyntaxTree SyntaxTree;
 
-// Build syntax treee
-SyntaxTree* build(const char* const expression);
+// Build syntax tree
+void build(SyntaxTree** root, FILE* file);
 
 // Print tree in infix form
 void printSyntaxTree(const SyntaxTree* const tree);
 
 // Calculating tree
-int calculate(const SyntaxTree* const tree);
+int calculateSyntaxTree(const SyntaxTree* const tree);
 
 // Deleting tree
 void deleteSyntaxTree(SyntaxTree** tree);

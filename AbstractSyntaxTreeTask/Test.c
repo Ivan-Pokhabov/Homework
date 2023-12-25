@@ -15,11 +15,10 @@ bool test1(void)
 		printf("File not found");
 		return false;
 	}
-	char expression[1000];
-	fgets(expression, 1000, file);
+	SyntaxTree* tree = NULL;
+	build(&tree, file);
 	fclose(file);
-	SyntaxTree* tree = build(expression);
-	if (calculate(tree) != 10)
+	if (calculateSyntaxTree(tree) != 10)
 	{
 		passed = false;
 	}
@@ -37,11 +36,10 @@ bool test2(void)
 		printf("File not found");
 		return false;
 	}
-	char expression[1000];
-	fgets(expression, 1000, file);
+	SyntaxTree* tree = NULL;
+	build(&tree, file);
 	fclose(file);
-	SyntaxTree* tree = build(expression);
-	if (calculate(tree) != 3)
+	if (calculateSyntaxTree(tree) != 3)
 	{
 		passed = false;
 	}
@@ -59,11 +57,10 @@ bool test3(void)
 		printf("File not found");
 		return false;
 	}
-	char expression[1000];
-	fgets(expression, 1000, file);
+	SyntaxTree* tree = NULL;
+	build(&tree, file);
 	fclose(file);
-	SyntaxTree* tree = build(expression);
-	if (calculate(tree) != 1)
+	if (calculateSyntaxTree(tree) != 1)
 	{
 		passed = false;
 	}

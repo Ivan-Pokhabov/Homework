@@ -4,143 +4,98 @@
 
 #include "SyntaxTree.h"
 
-typedef struct Node
-{
-	char operation;
-	int operand;
-	struct Node* leftChild;
-	struct Node* rightChild;
-} Node;
-
 struct SyntaxTree
 {
-	Node* root;
+    char operation;
+    int operand;
+    SyntaxTree* leftChild;
+    SyntaxTree* rightChild;
 };
 
-SyntaxTree* createSyntaxTree()
+void build(SyntaxTree** root, FILE* file)
 {
-	return calloc(1, sizeof(SyntaxTree));
+    while (true)
+    {
+        char currentSymbol = getc(file);
+        if (currentSymbol == EOF)
+        {
+            return;
+        }
+        switch (currentSymbol)
+        {
+        case ' ':
+        case '(':
+            continue;
+            break;
+        case ')':
+            return;
+        case '+':
+        case '*':
+        case '/':
+        case '-':
+            *root = calloc(1, sizeof(SyntaxTree));
+            (*root)->operation = currentSymbol;
+            build(&(*root)->leftChild, file);
+            build(&(*root)->rightChild, file);
+            break;
+        default:
+            *root = calloc(1, sizeof(SyntaxTree));
+            ungetc(currentSymbol, file);
+            fscanf_s(file, "%d", &(*root)->operand);
+            return;
+        }
+    }
 }
 
-bool isEmpty(const SyntaxTree* const tree)
+int calculateSyntaxTree(SyntaxTree* root)
 {
-	return tree->root == NULL;
+    if (root == NULL)
+    {
+        return 0;
+    }
+    int leftResult = calculateSyntaxTree(root->leftChild);
+    int rightResult = calculateSyntaxTree(root->rightChild);
+    switch (root->operation)
+    {
+    case '+':
+        return leftResult + rightResult;
+    case '-':
+        return leftResult - rightResult;
+    case '*':
+        return leftResult * rightResult;
+    case '/':
+        return leftResult / rightResult; 
+    default:
+        return root->operand;
+    }
 }
 
-bool isLeaf(const Node* const node)
+void printSyntaxTree(SyntaxTree* root)
 {
-	return node->leftChild == NULL && node->rightChild == NULL;
+    if (root == NULL)
+    {
+        return;
+    }
+
+    if (root->operation == '\0')
+    {
+        printf("%d ", root->operand);
+    }
+    else
+    {
+        printf("%c ", root->operation);
+        printSyntaxTree(root->leftChild);
+        printSyntaxTree(root->rightChild);
+    }
 }
 
-bool isOperation(const char symbol)
+void deleteSyntaxTree(SyntaxTree** root)
 {
-	return symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/';
-}
-
-int getNumber(const char* expression, int* const position)
-{
-	int number = 0;
-	while (expression[*position] >= '0' && expression[*position] <= '9')
-	{
-		number = number * 10 + (expression[*position] - '0');
-		++(*position);
-	}
-	return number;
-}
-
-Node* newNode(const char* const expression, int* const position)
-{
-	++(*position);
-	while (expression[*position] == ' ' || expression[*position] == '(' || expression[*position] == ')')
-	{
-		++(*position);
-	}
-	Node* node = calloc(1, sizeof(Node));
-	if (isOperation(expression[*position]))
-	{
-		node->operation = expression[*position];
-		node->leftChild = newNode(expression, position);
-		node->rightChild = newNode(expression, position);
-	}
-	else
-	{
-		node->operand = getNumber(expression, position);
-	}
-	return node;
-}
-
-SyntaxTree* build(const char* const expression)
-{
-	int position = -1;
-	SyntaxTree* tree = createSyntaxTree();
-	tree->root = newNode(expression, &position);
-	return tree;
-}
-
-void printNode(const Node* const node)
-{
-	if (isLeaf(node))
-	{
-		printf("%d ", node->operand);
-		return;
-	}
-	printf("%c ", node->operation);
-	printNode(node->leftChild);
-	printNode(node->rightChild);
-}
-
-void printSyntaxTree(const SyntaxTree* const tree)
-{
-	if (isEmpty(tree))
-	{
-		return;
-	}
-	printNode(tree->root);
-}
-
-int calculateSubtree(const Node* const node)
-{
-	if (isLeaf(node))
-	{
-		return node->operand;
-	}
-	const int operand1 = calculateSubtree(node->leftChild);
-	const int operand2 = calculateSubtree(node->rightChild);
-	const char operation = node->operation;
-	if (operation == '+')
-	{
-		return operand1 + operand2;
-	}
-	if (operation == '-')
-	{
-		return operand1 - operand2;
-	}
-	if (operation == '*')
-	{
-		return operand1 * operand2;
-	}
-	return operand1 / operand2;
-}
-
-int calculate(const SyntaxTree* const tree)
-{
-	return calculateSubtree(tree->root);
-}
-
-void deleteChildren(Node* node)
-{
-	if (node == NULL)
-	{
-		return;
-	}
-	deleteChildren(node->leftChild);
-	deleteChildren(node->rightChild);
-	free(node);
-}
-
-void deleteSyntaxTree(SyntaxTree** tree)
-{
-	deleteChildren((*tree)->root);
-	free(*tree);
-	*tree = NULL;
+    if (*root == NULL)
+    {
+        return;
+    }
+    deleteSyntaxTree(&(*root)->leftChild);
+    deleteSyntaxTree(&(*root)->rightChild);
+    free(*root);
 }
