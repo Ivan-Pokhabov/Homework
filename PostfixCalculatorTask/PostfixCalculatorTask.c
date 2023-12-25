@@ -63,7 +63,7 @@ void arithmeticOperation(PostfixCalculator* calculator, ErrorCode* errorCode, Ch
         }
         else if (sign == '-')
         {
-            if (pushInt(&(calculator->numbers), number1 - number2) != intOk)
+            if (pushInt(&(calculator->numbers), number2 - number1) != intOk)
             {
                 *intStackErrorCode = intMemoryError;
                 *errorCode = intStackError;
@@ -76,7 +76,7 @@ void arithmeticOperation(PostfixCalculator* calculator, ErrorCode* errorCode, Ch
                 *errorCode = division0;
                 return;
             }
-            else if (pushInt(&(calculator->numbers), number1 / number2) != intOk)
+            else if (pushInt(&(calculator->numbers), number2 / number1) != intOk)
             {
                 *intStackErrorCode = intMemoryError;
                 *errorCode = intStackError;
@@ -207,7 +207,7 @@ bool test(void)
     CharStackErrorCode charStackErrorCode = charOk;
     IntStackErrorCode intStackErrorCode = intOk;
     int result = postfixCalculator(file, &errorCode, &charStackErrorCode, &intStackErrorCode);
-    if (result != -2 || errorCode != ok || charStackErrorCode != charOk || intStackErrorCode != intOk)
+    if (result != -1 || errorCode != ok || charStackErrorCode != charOk || intStackErrorCode != intOk)
     {
         tests[0] = false;
     }
