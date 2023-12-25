@@ -1,11 +1,11 @@
-﻿#include "Phonebook.h"
-#include "Test.h"
-
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <locale.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
+#include "Phonebook.h"
+#include "Test.h"
 
 #define INCORRECT_INPUT -10
 
@@ -16,7 +16,7 @@ void instructions(void)
     printf("2 - распечатать все имеющиеся записи\n");
 }
 
-int phonebookSort(const char* const fileName)
+PhonebookErrorCode phonebookSort(const char* const fileName)
 {
     Phonebook* phonebook = createPhonebook();
     if (phonebook == NULL)
@@ -27,7 +27,7 @@ int phonebookSort(const char* const fileName)
     size_t size = 0;
     if (getFileData(fileName, phonebook, &size) != ok)
     {
-        return fileOpenningError;
+        return fileOpeningError;
     }
     instructions();
     int command = -1;

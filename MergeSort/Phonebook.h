@@ -27,7 +27,7 @@ PhonebookErrorCode add(Phonebook* const phonebook, const char* const name, const
 PhonebookErrorCode print(const Phonebook* const phonebook);
 
 // Taking data from file to phonebook
-PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook, size_t* size);
+PhonebookErrorCode getFileData(char fileName[], Phonebook* phonebook, size_t* size);
 
 // Sort notes in phonebook
 void mergeSort(Phonebook* phonebook, const size_t leftBorder, const size_t rightBorder, const int parameter, PhonebookErrorCode* errorCode);

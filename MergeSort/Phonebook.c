@@ -1,16 +1,16 @@
-﻿#include "Phonebook.h"﻿
-
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <locale.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "Phonebook.h"﻿
+
 typedef struct PhonebookNote
 {
     char name[100];
     char number[100];
-    PhonebookNote* next;
+    struct PhonebookNote* next;
 } PhonebookNote;
 
 struct Phonebook
@@ -91,13 +91,13 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
         fclose(file);
         return nullptr;
     }
+    char name[100] = { 0 };
+    char number[100] = { 0 };
     while (!feof(file))
     {
-        char name[100] = { 0 };
-        char number[100] = { 0 };
         char buffer[100] = { 0 };
-        const int readbytes = fscanf_s(file, "%s", buffer, 100);
-        if (readbytes < 0)
+        const int readBytes = fscanf_s(file, "%s", buffer, 100);
+        if (readBytes < 0)
         {
             break;
         }
@@ -180,6 +180,7 @@ PhonebookErrorCode merge(Phonebook* phonebook, const size_t leftBorder, const si
         current = current->next;
         if (current == NULL)
         {
+            deletePhonebook(&sortedPhonebook);
             return invalidIndex;
         }
     }
@@ -188,6 +189,7 @@ PhonebookErrorCode merge(Phonebook* phonebook, const size_t leftBorder, const si
     {
         if (isEmpty(sortedPhonebook, &errorCode))
         {
+            deletePhonebook(&sortedPhonebook);
             return nullptr;
         }
         strcpy_s(current->name, 100, sortedPhonebook->head->name);
