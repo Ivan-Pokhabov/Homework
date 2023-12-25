@@ -135,5 +135,4 @@ int main()
     free(distances);
     free(colours);
     deleteGraph(&graph);
-    _CrtDumpMemoryLeaks();
 }
