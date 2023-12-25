@@ -3,9 +3,9 @@
 //Errors
 typedef enum IntStackErrorCode
 {
-	intOk,
-	intNullptr,
-	intMemoryError
+    intOk,
+    intNullptr,
+    intMemoryError
 } IntStackErrorCode;
 
 //Struct of stack consisting of integer numbers
