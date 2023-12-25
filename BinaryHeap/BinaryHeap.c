@@ -82,9 +82,9 @@ int add(BinaryHeap* const heap, const int key, const int value)
     if (heap->elementsNumber == heap->size)
     {
         int* oldKeys = heap->keys;
-        heap->keys = realloc(heap->keys, 2 * (heap->size + 1), sizeof(int));
+        heap->keys = realloc(heap->keys, 2 * (heap->size + 1) * sizeof(int));
         int* oldValues = heap->values;
-        heap->values = realloc(heap->keys, 2 * (heap->size + 1), sizeof(int));
+        heap->values = realloc(heap->keys, 2 * (heap->size + 1) * sizeof(int));
         if (heap->keys == NULL)
         {
             free(oldKeys);
