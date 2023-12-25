@@ -25,17 +25,19 @@ bool bracketCompare(char leftBracket, char rightBracket)
     }
 }
 
-bool isBalanced(FILE* file, ErrorCode *errorCode, CharStackErrorCode *stackErrorCode)
+bool isBalanced(const char* const bracketSequence, ErrorCode *errorCode, CharStackErrorCode *stackErrorCode)
 {
     CharStack* bracketStack = NULL;
-    char symbol = getc(file);
-    while (symbol != '\n' || symbol != EOF)
+    size_t symbolIndex = 0;
+    char symbol = bracketSequence[symbolIndex];
+    while (symbol != '\0')
     {
         while (symbol == ' ')
         {
-            symbol = getc(file);
+            ++symbolIndex;
+            symbol = bracketSequence[symbolIndex];
         }
-        if (symbol == '\n' || symbol == EOF)
+        if (symbol == '\0')
         {
             break;
         }
@@ -67,7 +69,8 @@ bool isBalanced(FILE* file, ErrorCode *errorCode, CharStackErrorCode *stackError
             clearChar(&bracketStack);
             return false;
         }
-        symbol = getc(file);
+        ++symbolIndex;
+        symbol = bracketSequence[symbolIndex];
     }
     if (bracketStack != NULL)
     {
@@ -78,33 +81,58 @@ bool isBalanced(FILE* file, ErrorCode *errorCode, CharStackErrorCode *stackError
     return true;
 }
 
-bool test(void)
+bool test1(void)
 {
     FILE* file = NULL;
     fopen_s(&file, "test1.txt", "r");
     ErrorCode errorCode = ok;
     CharStackErrorCode stackErrorCode = charOk;
-    bool errors[4] = { true, true, true, true };
-    if (!isBalanced(file, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk)
-    {
-        errors[0] = false;
-    }
+    char sequence[100] = "";
+    fgets(sequence, 100, file);
+    fclose(file);
+    return !(!isBalanced(sequence, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk);
+}
+
+bool test2(void)
+{
+    FILE* file = NULL;
     fopen_s(&file, "test2.txt", "r");
-    if (!isBalanced(file, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk)
-    {
-        errors[1] = false;
-    }
+    ErrorCode errorCode = ok;
+    CharStackErrorCode stackErrorCode = charOk;
+    char sequence[100] = "";
+    fgets(sequence, 100, file);
+    fclose(file);
+    return !(!isBalanced(sequence, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk);
+}
+
+bool test3(void)
+{
+    FILE* file = NULL;
     fopen_s(&file, "test3.txt", "r");
-    if (isBalanced(file, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk)
-    {
-        errors[2] = false;
-    }
-    fopen_s(&file, "test4.txt", "r");
-    if (!isBalanced(file, &errorCode, &stackErrorCode) && errorCode == ok || stackErrorCode != charOk)
-    {
-        errors[3] = false;
-    }
+    ErrorCode errorCode = ok;
+    CharStackErrorCode stackErrorCode = charOk;
+    char sequence[100] = "";
+    fgets(sequence, 100, file);
+    fclose(file);
+    return !(isBalanced(sequence, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk);
+}
+
+bool test4(void)
+{
+    FILE* file = NULL;
+    fopen_s(&file, "test3.txt", "r");
+    ErrorCode errorCode = ok;
+    CharStackErrorCode stackErrorCode = charOk;
+    char sequence[100] = "";
+    fgets(sequence, 100, file);
+    fclose(file);
+    return !(isBalanced(sequence, &errorCode, &stackErrorCode) || errorCode != ok || stackErrorCode != charOk);
+}
+
+bool test(void)
+{
     bool completeTests = true;
+    bool errors[4] = {test1(), test2(), test3(), test4()};
     for (int i = 0; i < 4; ++i)
     {
         if (!errors[i])
@@ -125,7 +153,9 @@ int main()
         return -1;
     }
     printf("Enter your bracket subsequence: ");
-    if (isBalanced(stdin, &errorCode, &stackErrorCode))
+    char sequence[100] = "";
+    gets_s(sequence, 100);
+    if (isBalanced(sequence, &errorCode, &stackErrorCode))
     {
         printf("Your bracket subsequence is balanced");
     }
