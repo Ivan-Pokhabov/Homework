@@ -3,9 +3,9 @@
 //Errors
 typedef enum CharStackErrorCode
 {
-	charOk,
-	charNullptr,
-	charMemoryError
+    charOk,
+    charNullptr,
+    charMemoryError
 } CharStackErrorCode;
 
 //Struct of stack consisting of chars
