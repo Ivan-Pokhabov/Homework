@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "Test.h"
 #include "Lexer.h"
@@ -16,7 +17,7 @@ static bool test2(void)
 
 static bool test3(void)
 {
-    return lexer("12.12.E-12") == false;
+    return !lexer("12.12.E-12");
 }
 
 bool test(void)
@@ -25,7 +26,7 @@ bool test(void)
     bool passed = true;
     for (size_t i = 0; i < 3; ++i)
     {
-        if (tests[i] != true)
+        if (!tests[i])
         {
             passed = false;
             printf("Function does not work with test %lld", i + 1);

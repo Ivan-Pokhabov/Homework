@@ -4,21 +4,32 @@
 
 #include "Lexer.h"
 
+typedef enum Stage
+{
+    nothing = 0,
+    firstDigit = 1,
+    dot = 2,
+    secondDigit = 3,
+    stateOnE = 4,
+    plusOrMinus = 5,
+    thirdDigit = 6,
+} Stage;
+
 bool lexer(const char* const string)
 {
-    int state = 0;
+    Stage state = 0;
     for (size_t i = 0; i == 0 || string[i - 1] != '\0'; ++i)
     {
         switch (state)
         {
-        case 0:
+        case nothing:
             if (isdigit(string[i]))
             {
                 state = 1;
                 break;
             }
             return false;
-        case 1:
+        case firstDigit:
             if (isdigit(string[i]))
             {
                 state = 1;
@@ -35,14 +46,14 @@ bool lexer(const char* const string)
                 break;
             }
             return string[i] == '\0';
-        case 2:
+        case dot:
             if (isdigit(string[i]))
             {
                 state = 3;
                 break;
             }
             return false;
-        case 3:
+        case secondDigit:
             if (isdigit(string[i]))
             {
                 state = 3;
@@ -54,7 +65,7 @@ bool lexer(const char* const string)
                 break;
             }
             return string[i] == '\0';
-        case 4:
+        case stateOnE:
             if (isdigit(string[i]))
             {
                 state = 6;
@@ -66,14 +77,14 @@ bool lexer(const char* const string)
                 break;
             }
             return false;
-        case 5:
+        case plusOrMinus:
             if (isdigit(string[i]))
             {
                 state = 6;
                 break;
             }
             return false;
-        case 6:
+        case thirdDigit:
             if (isdigit(string[i]))
             {
                 state = 6;
@@ -82,4 +93,5 @@ bool lexer(const char* const string)
             return string[i] == '\0';
         }
     }
+    return false;
 }
