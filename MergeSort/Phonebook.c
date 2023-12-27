@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "Phonebook.h"﻿
+#include "Phonebook.h"
 
 typedef struct PhonebookNote
 {
@@ -77,7 +77,7 @@ PhonebookErrorCode print(const Phonebook* const phonebook)
     return ok;
 }
 
-PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook, size_t* size)
+PhonebookErrorCode getFileData(const char fileName[], Phonebook* phonebook, size_t* size)
 {
     FILE* file = NULL;
     fopen_s(&file, fileName, "r");
@@ -85,7 +85,7 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
     {
         return fileOpeningError;
     }
-    int coloumn = 0;
+    int column = 0;
     if (phonebook == NULL)
     {
         fclose(file);
@@ -101,7 +101,7 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
         {
             break;
         }
-        if (coloumn == 0)
+        if (column == 0)
         {
             strcpy_s(name, 100, buffer);
         }
@@ -111,7 +111,7 @@ PhonebookErrorCode getFileData(const char const fileName[], Phonebook* phonebook
             add(phonebook, name, number);
             ++(*size);
         }
-        coloumn ^= 1;
+        column ^= 1;
     }
     fclose(file);
     return ok;
@@ -153,7 +153,7 @@ PhonebookErrorCode merge(Phonebook* phonebook, const size_t leftBorder, const si
         {
             add(sortedPhonebook, rightSubPhonebookElement->name, rightSubPhonebookElement->number);
             rightSubPhonebookElement = rightSubPhonebookElement->next;
-            ++rightIndex;            
+            ++rightIndex;
         }
         else
         {
@@ -209,7 +209,7 @@ void mergeSort(Phonebook* phonebook, const size_t leftBorder, const size_t right
     {
         return;
     }
-    if (isEmpty(phonebook, &errorCode))
+    if (isEmpty(phonebook, errorCode))
     {
         *errorCode = nullptr;
         return;
@@ -235,7 +235,7 @@ void deletePhonebook(Phonebook** phonebook)
 
 bool checkSort(const Phonebook* const phonebook, const int parameter)
 {
-    Phonebook* errorCode = ok;
+    PhonebookErrorCode errorCode = ok;
     if (isEmpty(phonebook, &errorCode))
     {
         return true;

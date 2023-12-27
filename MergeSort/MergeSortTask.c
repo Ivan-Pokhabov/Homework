@@ -66,6 +66,7 @@ PhonebookErrorCode phonebookSort(const char* const fileName)
             }
         }
     }
+    return ok;
 }
 
 int main()
