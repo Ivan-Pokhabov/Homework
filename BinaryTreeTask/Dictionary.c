@@ -30,38 +30,51 @@ bool isEmpty(const BinaryTree* const tree)
     return tree->root == NULL;
 }
 
-void insert(Node* const node, const int key, const char* const value)
+ErrorCode insert(Node* const node, const int key, const char* const value)
 {
+    ErrorCode errorCode = ok;
     if (key == node->key)
     {
         strcpy_s(node->value, VALUE_SIZE, value);
-        return;
+        return ok;
     }
     if (key < node->key)
     {
         if (node->leftChild == NULL)
         {
             Node* newNode = calloc(1, sizeof(Node));
+            if (newNode == NULL)
+            {
+                return memoryError;
+            }
             newNode->parent = node;
             newNode->key = key;
             strcpy_s(newNode->value, VALUE_SIZE, value);
             node->leftChild = newNode;
-            return;
+            return ok;
         }
-        insert(node->leftChild, key, value);
+        errorCode = insert(node->leftChild, key, value);
     }
     if (key > node->key)
     {
         if (node->rightChild == NULL)
         {
             Node* newNode = calloc(1, sizeof(Node));
+            if (newNode == NULL)
+            {
+                return memoryError;
+            }
             newNode->parent = node;
             newNode->key = key;
             strcpy_s(newNode->value, VALUE_SIZE, value);
             node->rightChild = newNode;
-            return;
+            return ok;
         }
-        insert(node->rightChild, key, value);
+        errorCode = insert(node->rightChild, key, value);
+    }
+    if (errorCode != ok)
+    {
+        return errorCode;
     }
 }
 
@@ -141,18 +154,18 @@ Node* findNodeClosestToNode(const Node* const node)
         rightmostNodeOnTheLeft = rightmostNodeOnTheLeft->rightChild;
         leftPathLength++;
     }
-    Node* leftmostNodeOnTheLeft = node->rightChild;
+    Node* leftmostNodeOnTheRight = node->rightChild;
     int rightPathLength = 1;
-    while (leftmostNodeOnTheLeft->leftChild != NULL)
+    while (leftmostNodeOnTheRight->leftChild != NULL)
     {
-        leftmostNodeOnTheLeft = leftmostNodeOnTheLeft->leftChild;
+        leftmostNodeOnTheRight = leftmostNodeOnTheRight->leftChild;
         rightPathLength++;
     }
     if (leftPathLength > rightPathLength) 
     {
         return rightmostNodeOnTheLeft;
     }
-    return leftmostNodeOnTheLeft;
+    return leftmostNodeOnTheRight;
 }
 
 void copyData(Node* const destination, const Node* const source)
@@ -279,13 +292,4 @@ void deleteBinaryTree(const BinaryTree** const tree)
     deleteChildren((*tree)->root);
     free(*tree);
     *tree = NULL;
-}
-
-void instructions(void)
-{
-    printf("0 - Âûéòè\n");
-    printf("1 - Äîáàâèòü çíà÷åíèå ïî êëþ÷ó\n");
-    printf("2 - Íàéòè çíà÷åíèå ïî êëþ÷ó\n");
-    printf("3 - Ïðîâåðèòü ñóùåñòâîâàíèå êëþ÷à\n");
-    printf("4 - Óäàëèòü êëþ÷ è çíà÷åíèå\n");
 }

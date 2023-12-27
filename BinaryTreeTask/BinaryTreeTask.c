@@ -6,6 +6,15 @@
 #include "Dictionary.h"
 #include "Test.h"
 
+void instructions(void)
+{
+    printf("0 - Выйти\n");
+    printf("1 - Добавить значение по ключу\n");
+    printf("2 - Получить значение по ключу\n");
+    printf("3 - Проверить существование ключа\n");
+    printf("4 - Удалить значение по ключу\n");
+}
+
 int main()
 {
     if (!test())
@@ -35,7 +44,7 @@ int main()
                 break;
             }
             printf("Введите значение: ");
-            char value[100];
+            char value[100] = "";
             if (scanf_s("%s", value, 100) != 1)
             {
                 printf("Неверный ввод, повторите снова\n");
@@ -52,7 +61,7 @@ int main()
                 printf("Неверный ввод, повторите снова\n");
                 break;
             }
-            char* value = getValue(tree, key);
+            const char* value = getValue(tree, key);
             if (value != NULL)
             {
                 printf("Значение: %s", value);

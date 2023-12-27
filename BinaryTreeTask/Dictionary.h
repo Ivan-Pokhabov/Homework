@@ -1,5 +1,12 @@
-c#pragma once
+#pragma once
 #include<stdbool.h>
+
+typedef enum ErrorCode
+{
+    ok,
+    nullptr,
+
+};
 
 // Binary search tree (key < 1000 symbols)
 typedef struct BinaryTree BinaryTree;
@@ -21,6 +28,3 @@ void deleteValue(const BinaryTree* const tree, const int key);
 
 // Deleting tree
 void deleteBinaryTree(const BinaryTree** const tree);
-
-//Print using instructions
-void instructions(void);
