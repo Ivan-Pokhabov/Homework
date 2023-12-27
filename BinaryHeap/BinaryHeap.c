@@ -140,6 +140,8 @@ int build(BinaryHeap* const heap, const int const keys[], const int const values
     heap->values = calloc(size + 1, sizeof(int));
     if (heap->keys == NULL || heap->values == NULL)
     {
+        free(heap->keys);
+        free(heap->values);
         return nullptr;
     }
     heap->size = size;
