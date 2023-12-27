@@ -12,7 +12,7 @@
 
 unsigned int sumOfFibonacci(void)
 {
-    unsigned int sum = 2;
+    unsigned int sum = 0;
     unsigned int firstNumber = 1;
     unsigned int secondNumber = 1;
     while (firstNumber + secondNumber <= (unsigned int)1e6)
@@ -20,14 +20,18 @@ unsigned int sumOfFibonacci(void)
         unsigned int temp = firstNumber;
         firstNumber += secondNumber;
         secondNumber = temp;
-        sum += firstNumber;
+        if (firstNumber % 2 == 0)
+        {
+            sum += firstNumber;
+        }
+        
     }
     return sum;
 }
 
 bool testFibonacci(void)
 {
-    return sumOfFibonacci() == 2178308;
+    return sumOfFibonacci() == 1089154;
 }
 
 int main()

@@ -20,7 +20,7 @@ Error solveFileTask(const char* const arrayFileName, const char* const numberFil
         return fileDidNotOpen;
     }
     int number = 0;
-    if (fscanf_s(numberFile, "%d", &number) == 0)
+    if (fscanf_s(numberFile, "%d", &number) != 1)
     {
         fclose(numberFile);
         fclose(arrayFile);
