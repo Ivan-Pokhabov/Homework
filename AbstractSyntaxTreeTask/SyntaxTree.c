@@ -34,12 +34,20 @@ void build(SyntaxTree** root, FILE* file)
         case '/':
         case '-':
             *root = calloc(1, sizeof(SyntaxTree));
+            if (*root == NULL)
+            {
+                return;
+            }
             (*root)->operation = currentSymbol;
             build(&(*root)->leftChild, file);
             build(&(*root)->rightChild, file);
             break;
         default:
             *root = calloc(1, sizeof(SyntaxTree));
+            if (*root == NULL)
+            {
+                return;
+            }
             ungetc(currentSymbol, file);
             fscanf_s(file, "%d", &(*root)->operand);
             return;
@@ -47,7 +55,7 @@ void build(SyntaxTree** root, FILE* file)
     }
 }
 
-int calculateSyntaxTree(SyntaxTree* root)
+int calculateSyntaxTree(const SyntaxTree* const root)
 {
     if (root == NULL)
     {
@@ -70,7 +78,7 @@ int calculateSyntaxTree(SyntaxTree* root)
     }
 }
 
-void printSyntaxTree(SyntaxTree* root)
+void printSyntaxTree(const SyntaxTree* const root)
 {
     if (root == NULL)
     {
@@ -98,4 +106,5 @@ void deleteSyntaxTree(SyntaxTree** root)
     deleteSyntaxTree(&(*root)->leftChild);
     deleteSyntaxTree(&(*root)->rightChild);
     free(*root);
+    *root = NULL;
 }
