@@ -1,17 +1,18 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
-enum ErrorCodes
+typedef enum ErrorCodes
 {
     ok,
     memoryError = -19,
     nullptr = -20,
     openFileError = -21,
     incorrectInput = -22
-};
+} ErrorCodes;
 
-int readTextFromFile(const FILE* const file, char* text, size_t* const textSize)
+ErrorCodes readTextFromFile(const FILE* const file, char* text, size_t* const textSize)
 {
     if (file == NULL || text == NULL || textSize == NULL)
     {
@@ -44,7 +45,7 @@ int readTextFromFile(const FILE* const file, char* text, size_t* const textSize)
         free(oldBuffer);
         return memoryError;
     }
-    return 0;
+    return ok;
 }
 
 void prefixFunction(const char* const string, int* const prefixArray, const size_t stringSize, const size_t maxPrefixSize)
@@ -63,17 +64,19 @@ void prefixFunction(const char* const string, int* const prefixArray, const size
     }
 }
 
-int findSubstring(const char* const string, const char* const text, const size_t stringSize, const size_t textSize)
+int findSubstring(const char* const string, const char* const text, const size_t stringSize, const size_t textSize, ErrorCodes* errorCode)
 {
     if (string == NULL || text == NULL)
     {
-        return nullptr;
+        *errorCode == nullptr;
+        return -2;
     }
     const size_t newStringSize = stringSize + textSize;
     char* const newString = calloc(newStringSize, sizeof(char));
     if (newString == NULL)
     {
-        return memoryError;
+        *errorCode = memoryError;
+        return -2;
     }
     snprintf(newString, newStringSize, "%s%s", string, text);
     int* const prefixArray = calloc(newStringSize, sizeof(int));
@@ -90,6 +93,38 @@ int findSubstring(const char* const string, const char* const text, const size_t
     free(newString);
     free(prefixArray);
     return -1;
+}
+
+bool test1(void)
+{
+    ErrorCodes errorCode = ok;
+    return findSubstring("ab", "ba", 2, 2, &errorCode) == -1 && errorCode == ok;
+}
+
+bool test2(void)
+{
+    ErrorCodes errorCode = ok;
+    return findSubstring("ab", "baab", 2, 4, &errorCode) == 2 && errorCode == ok;
+}
+
+bool test3(void)
+{
+    ErrorCodes errorCode = ok;
+    return findSubstring("ab", "ab", 2, 2, &errorCode) == 0 && errorCode == ok;
+}
+
+bool test(void)
+{
+    bool tests[3] = { test1(), test2(), test3() };
+    bool complete = true;
+    for (size_t i = 0; i < 3; ++i)
+    {
+        if (!tests[i])
+        {
+            complete = false;
+            printf("Program does not work with test case ");
+        }
+    }
 }
 
 int main()
@@ -123,23 +158,28 @@ int main()
         return incorrectInput;
     }
     const size_t stringSize = strlen(string);
+    char* oldBuffer = string;
     string = realloc(string, (stringSize + 1) * sizeof(char));
     if (string == NULL)
     {
         free(text);
+        free(oldBuffer);
         return memoryError;
     }
-    int substringIndex = findSubstring(string, text, stringSize, textSize);
+    ErrorCodes errroCode = ok;
+    int substringIndex = findSubstring(string, text, stringSize, textSize, &errorCode);
+    if (errorCode != ok)
+    {
+        free(text);
+        free(string);
+        return errorCode;
+    }
     free(text);
     free(string);
-    if (substringIndex < -1)
-    {
-        return substringIndex;
-    }
     if (substringIndex == -1)
     {
         printf("Substring does not entered in text");
-        return 0;
+        return ok;
     }
     printf("Your string starts in text from index - %d", substringIndex);
 }
