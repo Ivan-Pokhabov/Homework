@@ -14,9 +14,6 @@ typedef enum HashTableErrorCode
 	getNonexistentElement
 } HashTableErrorCode;
 
-// Hash-function, that returns num from 0 to size of hash
-size_t hash(const char* const key);
-
 // Create hash table
 Table* createTable(void);
 

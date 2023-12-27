@@ -148,6 +148,10 @@ void deleteList(List** const list)
 	while (!isEmpty(*list))
 	{
 		ListElement* trash = (*list)->head;
+		if (trash == NULL || (*list)->head == NULL)
+		{
+			break;
+		}
 		(*list)->head = (*list)->head->next;
 		free(trash);
 	}

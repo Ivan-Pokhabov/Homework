@@ -26,7 +26,11 @@ size_t hash(const char* const key)
 Table* createTable(void)
 {
     Table* new = calloc(1, sizeof(Table));
-    new->amount = 0;
+    if (new == NULL)
+    {
+        return NULL;
+    }
+
     new->size = HASH_SIZE;
     return new;
 }
@@ -71,7 +75,7 @@ float loadFactor(const Table* const table)
 {
     if (table == NULL)
     {
-        return;
+        return -1.0;
     }
     return (float)table->amount / (float)table->size;
 }
@@ -80,14 +84,14 @@ int maxLengthList(const Table* const table)
 {
     if (table == NULL)
     {
-        return;
+        return -1;
     }
     int maxLength = 0;
     for (int i = 0; i < table->size; ++i)
     {
-        if (lengthList(table->hashes[i]) > maxLength)
+        if ((int)lengthList(table->hashes[i]) > maxLength)
         {
-            maxLength = lengthList(table->hashes[i]);
+            maxLength = (int)lengthList(table->hashes[i]);
         }
     }
     return maxLength;
@@ -97,7 +101,7 @@ float averageLengthList(const Table* const table)
 {
     if (table == NULL)
     {
-        return;
+        return -1.0;
     }
     int numberOfLists = 0;
     int numberOfNodes = 0;
@@ -106,7 +110,7 @@ float averageLengthList(const Table* const table)
         if (table->hashes[i] != NULL)
         {
             ++numberOfLists;
-            numberOfNodes += lengthList(table->hashes[i]);
+            numberOfNodes += (int)lengthList(table->hashes[i]);
         }
     }
     return (float)numberOfNodes / (float)numberOfLists;
