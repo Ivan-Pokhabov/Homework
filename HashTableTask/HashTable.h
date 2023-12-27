@@ -1,8 +1,10 @@
 #pragma once
 #include "List.h"
 
+// Struct of Hashtable
 typedef struct Table Table;
 
+// Hashtable errors
 typedef enum HashTableErrorCode
 {
 	ok,
@@ -33,5 +35,5 @@ float averageLengthList(const Table* const table);
 // print hash table
 void printTable(const Table* const table);
 
-//delete hash table
+// delete hash table
 void freeTable(Table** const table);
