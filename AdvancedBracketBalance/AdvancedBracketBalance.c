@@ -85,6 +85,10 @@ bool test1(void)
 {
     FILE* file = NULL;
     fopen_s(&file, "test1.txt", "r");
+    if (file == NULL)
+    {
+        return false;
+    }
     ErrorCode errorCode = ok;
     CharStackErrorCode stackErrorCode = charOk;
     char sequence[100] = "";
@@ -97,6 +101,10 @@ bool test2(void)
 {
     FILE* file = NULL;
     fopen_s(&file, "test2.txt", "r");
+    if (file == NULL)
+    {
+        return false;
+    }
     ErrorCode errorCode = ok;
     CharStackErrorCode stackErrorCode = charOk;
     char sequence[100] = "";
@@ -109,6 +117,10 @@ bool test3(void)
 {
     FILE* file = NULL;
     fopen_s(&file, "test3.txt", "r");
+    if (file == NULL)
+    {
+        return false;
+    }
     ErrorCode errorCode = ok;
     CharStackErrorCode stackErrorCode = charOk;
     char sequence[100] = "";
@@ -121,6 +133,10 @@ bool test4(void)
 {
     FILE* file = NULL;
     fopen_s(&file, "test3.txt", "r");
+    if (file == NULL)
+    {
+        return false;
+    }
     ErrorCode errorCode = ok;
     CharStackErrorCode stackErrorCode = charOk;
     char sequence[100] = "";
